@@ -286,7 +286,7 @@ function gsb() { # Git select branch
 
 function goto() {
   # Forward all arguments to the python script, and save the output code.
-  output=$(python ~/goto.py "$@")
+  output=$(python ~/smkleinrc/scripts/goto.py "$@")
   result=$?
   if [ $result -eq 1 ]; then
     # Exit code 1 means "cd to the directory on stdout"
