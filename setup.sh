@@ -13,18 +13,20 @@ confirm () {
     esac
 }
 
-mkdir -p backup_rc
+echo "This script will delete your local *.rc files and replace them with my own."
+
+mkdir -p ~/backup_rc
 
 echo "About to delete .bashrc and replace it with symlink."
-confirm && mv -f ~/.bashrc backup_rc && ln -s ~/smkleinrc/bash/bashrc
+confirm && mv -f ~/.bashrc ~/backup_rc; ln -s ~/smkleinrc/bash/bashrc ~/.bashrc
 
 echo "About to delete .vimrc and replace it with symlink."
-confirm && mv -f ~/.vimrc backup_rc && ln -s ~/smkleinrc/vim/vimrc
+confirm && mv -f ~/.vimrc ~/backup_rc; ln -s ~/smkleinrc/vim/vimrc ~/.vimrc
 
 mkdir -p .vim
 echo "Replacing .vim/bundle with symlink."
-confirm && rm -rf ~/.vim/bundle && ln -s ~/smkleinrc/.vim/bundle
+confirm && mv -f ~/.vim/bundle ~/backup_rc; ln -s ~/smkleinrc/.vim/bundle ~/.vim/bundle
 
 echo "Replacing .vim/syntax with symlink."
-confirm && rm -rf ~/.vim/syntax && ln -s ~/smkleinrc/.vim/syntax
+confirm && mv -f ~/.vim/syntax ~/backup_rc; ln -s ~/smkleinrc/.vim/syntax ~/.vim/syntax
 
