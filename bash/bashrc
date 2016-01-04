@@ -15,7 +15,15 @@ include () {
 
 # XXX XXX XXX XXX INCLUDE OTHER RC FILES HERE XXX XXX XXX XXX
 # This .bashrc file should be computer-agnostic!
+if [ "$(uname)" == "Darwin" ]; then
+  # Do something under Mac OS X platform
+  include ~/smkleinrc/bash/macrc    # Full of mac-specific things
+fi
+
+# Local, should not be committed.
+include ~/.googlerc
 include ~/.pathrc
+# XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options

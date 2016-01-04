@@ -18,15 +18,20 @@ echo "This script will delete your local *.rc files and replace them with my own
 mkdir -p ~/backup_rc
 
 echo "About to delete .bashrc and replace it with symlink."
-confirm && mv -f ~/.bashrc ~/backup_rc; ln -s ~/smkleinrc/bash/bashrc ~/.bashrc
+confirm && mv -f ~/.bashrc ~/backup_rc; rm -f ~/.bashrc; ln -s ~/smkleinrc/bash/bashrc ~/.bashrc
 
 echo "About to delete .vimrc and replace it with symlink."
-confirm && mv -f ~/.vimrc ~/backup_rc; ln -s ~/smkleinrc/vim/vimrc ~/.vimrc
+confirm && mv -f ~/.vimrc ~/backup_rc; rm -f ~/.vimrc; ln -s ~/smkleinrc/vim/vimrc ~/.vimrc
 
-mkdir -p .vim
-echo "Replacing .vim/bundle with symlink."
-confirm && mv -f ~/.vim/bundle ~/backup_rc; ln -s ~/smkleinrc/.vim/bundle ~/.vim/bundle
+mkdir -p ~/.vim
+echo "Pulling sources into .vim/bundle."
+confirm && rm -rf ~/.vim/bundle
+mkdir -p ~/.vim/bundle
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+echo "Installing plugins"
+vim +PluginInstall +qall
 
 echo "Replacing .vim/syntax with symlink."
-confirm && mv -f ~/.vim/syntax ~/backup_rc; ln -s ~/smkleinrc/.vim/syntax ~/.vim/syntax
+confirm && rm -rf ~/.vim/syntax; ln -s ~/smkleinrc/.vim/syntax ~/.vim/syntax
 

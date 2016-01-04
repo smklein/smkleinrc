@@ -1,0 +1,3 @@
+# Colored LS on mac
+export TERM="xterm-color"
+export CLICOLOR=1
