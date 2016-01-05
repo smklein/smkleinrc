@@ -66,7 +66,8 @@ set backspace=indent,eol,start
 
 " Helpful information: cursor position in bottom right, line numbers on left
 set ruler
-set number
+" Turning off line numbers for now...
+" set number
 
 " Enable filetype detection and syntax hilighting
 syntax on
@@ -121,7 +122,7 @@ map <C-K> <C-W>k
 map <C-L> <C-W>l
 
 " Quick way to close windows.
-map <C-q> <C-W>q
+map <C-q> :q<CR>
 
 set splitbelow
 set splitright
@@ -217,7 +218,6 @@ set cindent
 set incsearch
 set hlsearch
 set ignorecase
-set relativenumber
 
 command! Nonum set norelativenumber | set nonumber
 command! Yesnum set relativenumber | set number
