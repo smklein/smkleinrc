@@ -1,7 +1,7 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" Used by vim-gitgutter
+" --------------- vim-gitgutter: ---------------
 set shell=/bin/bash
 let g:gitgutter_sign_column_always = 1
 let g:gitgutter_diff_args = ''
@@ -19,7 +19,11 @@ endfunction
 
 " Control-s to switch the diff we are viewing
 nnoremap <C-s> :call ChangeGitgutterDiff() \| :w<CR>
+" ----------------------------------------------
 
+" ------------------ vundle: -------------------
+" To install plugins, run either
+" :PluginInstall    or    vim  +PluginInstall +qall
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -31,10 +35,13 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'haya14busa/incsearch.vim' " Incremental search
 Plugin 'airblade/vim-gitgutter' " Git diffs inline
 Plugin 'altercation/vim-colors-solarized' " Solarized
+Plugin 'tpope/vim-fugitive' "
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+" ----------------------------------------------
 
+" ---------------- incsearch -------------------
 " Incsearch, highlight while searching.
 let uname = system("uname -s")
 if uname !~ "Darwin"
@@ -43,15 +50,19 @@ if uname !~ "Darwin"
   map ?  <Plug>(incsearch-backward)
   map g/ <Plug>(incsearch-stay)
 endif
+" ----------------------------------------------
 
-" Ensure that we are in modern vim mode, not backwards-compatible vi mode
-set nocompatible
-set backspace=indent,eol,start
-
+" ----------------- google ---------------------
 " Google specific
 if filereadable("/usr/share/vim/google/google.vim")
   source /usr/share/vim/google/google.vim
 endif
+" ----------------------------------------------
+
+" ------------ Status, ruler, etc --------------
+" Ensure that we are in modern vim mode, not backwards-compatible vi mode
+set nocompatible
+set backspace=indent,eol,start
 
 " Helpful information: cursor position in bottom right, line numbers on left
 set ruler
@@ -79,6 +90,7 @@ vmap <C-p> "+p<CR>
 
 set pastetoggle=<F5>
 set runtimepath+=$GOROOT/misc/vim
+
 " Always show filename...
 set statusline=%f           "file name
 set statusline+=%=          "separator
@@ -91,6 +103,49 @@ set statusline+=%c          "column number
 set statusline+=,\[%l/%L\]  "row number / total rows
 set statusline+=\ %P        "percentage of way through file
 set laststatus=2
+" ----------------------------------------------
+
+" --------------- split window -----------------
+" Quick way to open windows.
+" Recall:
+" Horiz Split: Ctrl+w, s    or    :sp filename
+" Verti Split: Ctrl+w, v    or    :vs filename
+" Close Split: Ctrl+w, q
+" Go to new file: :e filename. Alternately, ":e ." to go to directory view.
+map <C-W>e <C-W>v
+
+" Quick way to switch windows.
+map <C-J> <C-W>j
+map <C-H> <C-W>h
+map <C-K> <C-W>k
+map <C-L> <C-W>l
+
+" Quick way to close windows.
+map <C-q> <C-W>q
+
+set splitbelow
+set splitright
+
+" Makes tab completion better when opening stuff.
+set wildmenu
+
+" :Shell -l -la
+function! s:ExecuteInShell(command)
+  let command = join(map(split(a:command), 'expand(v:val)'))
+  let winnr = bufwinnr('^' . command . '$')
+  silent! execute  winnr < 0 ? 'botright new ' . fnameescape(command) : winnr . 'wincmd w'
+  setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
+  echo 'Execute ' . command . '...'
+  silent! execute 'silent %!'. command
+  silent! execute 'resize ' . line('$')
+  silent! redraw
+  silent! execute 'au BufUnload <buffer> execute bufwinnr(' . bufnr('#') . ') . ''wincmd w'''
+  silent! execute 'nnoremap <silent> <buffer> <LocalLeader>r :call <SID>ExecuteInShell(''' . command . ''')<CR>'
+  echo 'Shell command ' . command . ' executed.'
+endfunction
+command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
+
+" ----------------------------------------------
 
 " Highlight TODOs and other important keywords
 augroup HighlightTODO
@@ -164,8 +219,8 @@ set hlsearch
 set ignorecase
 set relativenumber
 
-command Nonum set norelativenumber | set nonumber
-command Yesnum set relativenumber | set number
+command! Nonum set norelativenumber | set nonumber
+command! Yesnum set relativenumber | set number
 
 " Highlight trailing whitspace
 highlight ExtraWhitespace ctermbg=red guibg=red
@@ -182,5 +237,3 @@ autocmd BufNewFile,BufRead *.java
       \ call matchadd('ColorColumn', '\%101v.\+', 100)
 autocmd BufNewFile,BufRead *.cc,*.c,*.py,*.h
       \ call matchadd('ColorColumn', '\%81v.\+', 100)
-
-
