@@ -18,7 +18,7 @@ function ChangeGitgutterDiff()
 endfunction
 
 " Control-s to switch the diff we are viewing
-nnoremap <C-s> :call ChangeGitgutterDiff() \| :w<CR>
+nnoremap <C-g> :call ChangeGitgutterDiff() \| :w<CR>
 " ----------------------------------------------
 
 " ------------------ vundle: -------------------
@@ -113,7 +113,8 @@ set laststatus=2
 " Verti Split: Ctrl+w, v    or    :vs filename
 " Close Split: Ctrl+w, q
 " Go to new file: :e filename. Alternately, ":e ." to go to directory view.
-map <C-W>e <C-W>v
+map <C-E> <C-W>v
+map <C-S> <C-W>s
 
 " Quick way to switch windows.
 map <C-J> <C-W>j
