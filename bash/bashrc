@@ -209,7 +209,7 @@ function nvs {
 }
 
 # Find filename
-alias ff='find | grep'
+alias ff='find . | grep'
 alias gff='git ls-files | grep'
 
 alias filesize='stat --printf="%s"'
