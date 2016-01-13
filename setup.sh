@@ -23,6 +23,9 @@ confirm && mv -f ~/.bashrc ~/backup_rc; rm -f ~/.bashrc; ln -s ~/smkleinrc/bash/
 echo "About to delete .vimrc and replace it with symlink."
 confirm && mv -f ~/.vimrc ~/backup_rc; rm -f ~/.vimrc; ln -s ~/smkleinrc/vim/vimrc ~/.vimrc
 
+echo "About to delete .tmux and replace it with symlink."
+confirm && mv -f ~/.tmux.conf ~/backup_rc; rm -f ~/.tmux.conf; ln -s ~/smkleinrc/tmux/tmux.conf ~/.tmux.conf
+
 mkdir -p ~/.vim
 echo "Pulling sources into .vim/bundle."
 confirm && rm -rf ~/.vim/bundle

@@ -1,3 +1,15 @@
+" Just as a reminder of some commands, in case you forget...
+"
+" GENERAL:
+" ]c / [c used to jump between git changes in file
+" CTRL + N and CTRL + P for autocomplete
+"
+" CTAGS:
+" CTRL + ] to find next def
+" CTRL + t to go home
+" g] for list of matches
+" :tags to show matches used so far
+
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
@@ -35,12 +47,12 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'haya14busa/incsearch.vim' " Incremental search
 Plugin 'airblade/vim-gitgutter' " Git diffs inline
 Plugin 'altercation/vim-colors-solarized' " Solarized
-Plugin 'tpope/vim-fugitive' "
+Plugin 'tpope/vim-fugitive' " Git wrappers for vim
+Plugin 'christoomey/vim-tmux-navigator'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
 " ----------------------------------------------
-
 " ---------------- incsearch -------------------
 " Incsearch, highlight while searching.
 let uname = system("uname -s")
@@ -106,6 +118,7 @@ set statusline+=\ %P        "percentage of way through file
 set laststatus=2
 " ----------------------------------------------
 
+
 " --------------- split window -----------------
 " Quick way to open windows.
 " Recall:
@@ -121,6 +134,18 @@ map <C-J> <C-W>j
 map <C-H> <C-W>h
 map <C-K> <C-W>k
 map <C-L> <C-W>l
+
+" ---------------- Vim / tmux ------------------
+let g:tmux_navigator_save_on_switch = 1
+
+"let g:tmux_navigator_no_mappings = 1
+"nnoremap <silent> <C-H> :TmuxNavigateLeft<cr>
+"nnoremap <silent> <C-J> :TmuxNavigateDown<cr>
+"nnoremap <silent> <C-K> :TmuxNavigateUp<cr>
+"nnoremap <silent> <C-L> :TmuxNavigateRight<cr>
+" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+" ----------------------------------------------
+
 
 " Quick way to close windows.
 map <C-q> :q<CR>
@@ -195,8 +220,8 @@ nnoremap zk zr
 nnoremap zl zR
 set nofoldenable
 
-" Use control p to open current file in Chrome
-nnoremap <c-p> :exe '!google-chrome %'<CR>
+" Use control b to open current file in Chrome (B for Browser)
+nnoremap <c-b> :exe '!google-chrome %'<CR>
 
 " move vertically by visual line
 nnoremap j gj
@@ -238,3 +263,5 @@ autocmd BufNewFile,BufRead *.java
       \ call matchadd('ColorColumn', '\%101v.\+', 100)
 autocmd BufNewFile,BufRead *.cc,*.c,*.py,*.h
       \ call matchadd('ColorColumn', '\%81v.\+', 100)
+
+set t_ut=
