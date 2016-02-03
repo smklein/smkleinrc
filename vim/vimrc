@@ -53,6 +53,9 @@ Plugin 'christoomey/vim-tmux-navigator'
 call vundle#end()            " required
 filetype plugin indent on    " required
 " ----------------------------------------------
+" ------------------ ctags ---------------------
+set tags=tags;/
+" ----------------------------------------------
 " ---------------- incsearch -------------------
 " Incsearch, highlight while searching.
 let uname = system("uname -s")
