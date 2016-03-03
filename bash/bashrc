@@ -194,6 +194,8 @@ alias helpme='echo -e "GUIDE: ${CYAN}Tool, ${GREEN}command, ${BLUE}required args
         ${CYAN}nvs ${BLUE}<number>${NC} -- ${RED}Set NACLVERBOSITY level${NC}
     ${CYAN}SSH Stuff:${NC}
         ${CYAN}ssh${NC} ${BLUE}<slave name>${GREEN}.golo${NC} -- ${RED}SSH${NC}
+        ${CYAN}ssh${NC} ${BLUE}master4${GREEN}.golo${NC} -- ${RED}SSH${NC}
+        ${CYAN}ssh${NC} ${BLUE}slave704-c4${NC} -- ${RED}SSH${NC}
         ${CYAN}make stop${NC} -- ${RED}STOP machine from being used by others.${NC}
         ${CYAN}make start${NC} -- ${RED}GIVE machine back to others.${NC}
         ${CYAN}git${NC} ${GREEN}cl patch${NC} ${BLUE}<Issue num>${NC} -- ${RED} Apply patch to current machine.${NC}

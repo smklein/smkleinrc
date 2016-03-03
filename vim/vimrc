@@ -264,7 +264,7 @@ autocmd BufWinLeave * call clearmatches()
 highlight ColorColumn ctermbg=DarkMagenta
 autocmd BufNewFile,BufRead *.java
       \ call matchadd('ColorColumn', '\%101v.\+', 100)
-autocmd BufNewFile,BufRead *.cc,*.c,*.py,*.h
+autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
       \ call matchadd('ColorColumn', '\%81v.\+', 100)
 
 set t_ut=
