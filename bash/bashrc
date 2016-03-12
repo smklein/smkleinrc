@@ -322,7 +322,7 @@ export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
-if [ ! -d ~/direnv ] ; then
+if [[ -z $(which direnv) ]]; then
   echo "Hey, I noticed that direnv isn't installed. Lemme take care of that for you."
   git clone https://github.com/direnv/direnv
   cd direnv
