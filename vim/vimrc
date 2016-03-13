@@ -266,5 +266,7 @@ autocmd BufNewFile,BufRead *.java
       \ call matchadd('ColorColumn', '\%101v.\+', 100)
 autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
       \ call matchadd('ColorColumn', '\%81v.\+', 100)
+autocmd BufNewFile,BufRead *.txt
+      \ set nocindent
 
 set t_ut=
