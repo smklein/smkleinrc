@@ -1,8 +1,10 @@
 #!/bin/bash
+set -u
+set -e
 
 confirm () {
     # call with a prompt string or use a default
-    read -r -p "${1:-Are you sure? [y/N]} " response
+    read -r -p "${1:-Are you sure? [y/N/Control c to quit]} " response
     case $response in
         [yY][eE][sS]|[yY])
             true
@@ -13,28 +15,76 @@ confirm () {
     esac
 }
 
-echo "This script will delete your local *.rc files and replace them with my own."
+  echo "   ~~~ SETTING UP ~~~   "
+echo "I think the smkleinrc is >>> [$SMKLEINRC_PATH] <<< "
+if [ -d "${SMKLEINRC_PATH}" ]; then
+  echo "It seems to be a directory, do you want to use it as the source of truth?";
+  confirm
+  if [ ! $? ]; then
+    exit 1
+  fi
+else
+  echo "Not a valid directory";
+  exit 1
+fi
 
-mkdir -p ~/backup_rc
+function install_rc_files () {
+  echo "   ~~~ INSTALLING *.RC FILES ~~~   "
+  echo "This script will delete your local *.rc files and replace them with my own."
 
-echo "About to delete .bashrc and replace it with symlink."
-confirm && mv -f ~/.bashrc ~/backup_rc; rm -f ~/.bashrc; ln -s ~/smkleinrc/bash/bashrc ~/.bashrc
+  mkdir -p ~/backup_rc
 
-echo "About to delete .vimrc and replace it with symlink."
-confirm && mv -f ~/.vimrc ~/backup_rc; rm -f ~/.vimrc; ln -s ~/smkleinrc/vim/vimrc ~/.vimrc
+  echo "About to delete .bashrc and replace it with symlink."
+  confirm && mv -f ~/.bashrc ~/backup_rc; rm -f ~/.bashrc; ln -s ${SMKLEINRC_PATH}/bash/bashrc ~/.bashrc
 
-echo "About to delete .tmux and replace it with symlink."
-confirm && mv -f ~/.tmux.conf ~/backup_rc; rm -f ~/.tmux.conf; ln -s ~/smkleinrc/tmux/tmux.conf ~/.tmux.conf
+  echo "About to delete .vimrc and replace it with symlink."
+  confirm && mv -f ~/.vimrc ~/backup_rc; rm -f ~/.vimrc; ln -s ${SMKLEINRC_PATH}/vim/vimrc ~/.vimrc
 
-mkdir -p ~/.vim
-echo "Pulling sources into .vim/bundle."
-confirm && rm -rf ~/.vim/bundle
-mkdir -p ~/.vim/bundle
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  echo "About to delete .tmux and replace it with symlink."
+  confirm && mv -f ~/.tmux.conf ~/backup_rc; rm -f ~/.tmux.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux.conf ~/.tmux.conf
 
-echo "Installing plugins"
-vim +PluginInstall +qall
+  mkdir -p ~/.vim
 
-echo "Replacing .vim/syntax with symlink."
-confirm && rm -rf ~/.vim/syntax; ln -s ~/smkleinrc/.vim/syntax ~/.vim/syntax
+  if [ -d ~/.vim/bundle/Vundle.vim ]; then
+    echo "You already have Vundle, no need to clone it."
+  else
+    echo "Pulling sources into .vim/bundle."
+    confirm && rm -rf ~/.vim/bundle
+    mkdir -p ~/.vim/bundle
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  fi
 
+  echo "Install Vundle plugins"
+  confirm && vim +PluginInstall +qall
+
+  echo "Replacing .vim/syntax with symlink."
+  confirm && rm -rf ~/.vim/syntax; ln -s ${SMKLEINRC_PATH}/.vim/syntax ~/.vim/syntax
+}
+
+echo "Want me to re-install rc files?"
+confirm && install_rc_files
+
+function install_git_repos () {
+  echo "   ~~~ INSTALLING GITHUB REPOS ~~~   "
+  echo "I think the github dump is >>> [$GITHUB_PATH] <<< "
+  echo "Do you want to use it as a git dumping ground?"
+  mkdir -p ${GITHUB_PATH}
+  confirm
+  if [ ! $? ]; then
+    exit 1
+  fi
+
+  function install_one_git_repo() {
+    if [ -d ${GITHUB_PATH}/$1 ]; then
+      echo "   Already installed: $1"
+    else
+      git clone $2 ${GITHUB_PATH}/$1
+    fi
+
+  }
+  install_one_git_repo private https://github.com/smklein/private.git
+  install_one_git_repo blog https://github.com/smklein/smklein.github.io.git
+}
+
+echo "Want me to re-install git repos?"
+confirm && install_git_repos

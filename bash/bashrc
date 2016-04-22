@@ -13,13 +13,16 @@ include () {
     [[ -f "$1" ]] && source "$1"
 }
 
+export SMKLEINRC_PATH=~/smkleinrc
+export GITHUB_PATH=~/repos
+
 # XXX XXX XXX XXX INCLUDE OTHER RC FILES HERE XXX XXX XXX XXX
 # This .bashrc file should be computer-agnostic!
-include ~/smkleinrc/bash/setuprc
+include ${SMKLEINRC_PATH}/bash/setuprc
 
 if [ "$(uname)" == "Darwin" ]; then
   # Do something under Mac OS X platform
-  include ~/smkleinrc/bash/macrc    # Full of mac-specific things
+  include ${SMKLEINRC_PATH}/bash/macrc    # Full of mac-specific things
 fi
 
 # Local, should not be committed.
@@ -314,7 +317,7 @@ function gsb() { # Git select branch
 
 function goto() {
   # Forward all arguments to the python script, and save the output code.
-  output=$(python ~/smkleinrc/scripts/goto.py "$@")
+  output=$(python ${SMKLEINRC_PATH}/scripts/goto.py "$@")
   result=$?
   if [ $result -eq 1 ]; then
     # Exit code 1 means "cd to the directory on stdout"
