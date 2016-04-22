@@ -194,6 +194,8 @@ augroup END
 " Settings for Solarized
 syntax enable
 set background=dark
+" Make .txt files light...
+autocmd BufRead,BufNewFile *.txt set background=light
 set term=xterm-256color
 let g:solarized_termcolors = 256
 let g:solarized_visibility = "high"
