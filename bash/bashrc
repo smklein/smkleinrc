@@ -15,6 +15,8 @@ include () {
 
 # XXX XXX XXX XXX INCLUDE OTHER RC FILES HERE XXX XXX XXX XXX
 # This .bashrc file should be computer-agnostic!
+include ~/smkleinrc/bash/setuprc
+
 if [ "$(uname)" == "Darwin" ]; then
   # Do something under Mac OS X platform
   include ~/smkleinrc/bash/macrc    # Full of mac-specific things
@@ -331,16 +333,13 @@ export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
-if [[ -z $(which direnv) ]]; then
-  echo "Hey, I noticed that direnv isn't installed. Lemme take care of that for you."
-  read -p "Want me to install it? " -n 1 -r
-  if [[ $REPLY =~ ^[Yy]$ ]]
-  then
-    git clone https://github.com/direnv/direnv
-    cd direnv
-    sudo make install
-  fi
-fi
+function installDirenv() {
+  cd ~
+  git clone https://github.com/direnv/direnv
+  cd direnv
+  sudo make install
+}
+promptInstall direnv installDirenv
 
 export EDITOR=vim
 
