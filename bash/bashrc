@@ -124,7 +124,10 @@ alias l='ls -CF'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 function boop {
-  alert
+  echo -en '\a'
+  sleep 0.2
+  echo -en '\a'
+  sleep 0.2
   echo -en '\a'
   sleep 0.2
   echo -en '\a'
@@ -233,8 +236,8 @@ function md5() {
 
 # Git aliases
 function gcm() { git commit -a -m "$*" ;}
-alias gdfno='git diff origin/master --name-only'
-alias gdfns='git diff origin/master --name-status'
+alias gdfno='git diff `git rev-parse @{u}` --name-only'
+alias gdfns='git diff `git rev-parse @{u}` --name-status'
 alias gb='git branch'
 function gdf() { # Git diff file
   fileNum=0
@@ -251,6 +254,8 @@ function gdf() { # Git diff file
     done
   fi
   if [ "$#" -eq 0 ]; then
+    upstream_branch_name=$(git rev-parse --symbolic-full-name @{u})
+    echo -e "${CYAN}Tracking upstream: [${PURPLE}$upstream_branch_name${CYAN}]${NC}"
     IFS=$'\n'
     for f in $(gdfns)
     do

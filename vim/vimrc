@@ -267,4 +267,6 @@ autocmd BufNewFile,BufRead *.java
 autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
       \ call matchadd('ColorColumn', '\%81v.\+', 100)
 
+au BufRead,BufNewFile *.scons set filetype=python
+
 set t_ut=
