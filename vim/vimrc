@@ -194,6 +194,8 @@ augroup END
 " Settings for Solarized
 syntax enable
 set background=dark
+" Make .txt files light...
+autocmd BufRead,BufNewFile *.txt set background=light
 set term=xterm-256color
 let g:solarized_termcolors = 256
 let g:solarized_visibility = "high"
@@ -213,13 +215,13 @@ hi Function ctermfg=87 gui=bold
 " Admittedly, I couldn't disable autofolding... I just used a high level...
 set foldlevelstart=2
 set foldmethod=indent
-" More folding (by one level)
-nnoremap zj zm
-" More folding (by all levels)
+" More folding (locally, by one level)
+nnoremap zj zC
+" More folding (globally, by all levels)
 nnoremap zh zM
-" Less folding (by one level)
-nnoremap zk zr
-" Less folding (by all levels)
+" Less folding (locally, by one level)
+nnoremap zk zO
+" Less folding (globally, by all levels)
 nnoremap zl zR
 set nofoldenable
 
@@ -268,5 +270,7 @@ autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
       \ call matchadd('ColorColumn', '\%81v.\+', 100)
 autocmd BufNewFile,BufRead *.txt
       \ set nocindent
+
+au BufRead,BufNewFile *.scons set filetype=python
 
 set t_ut=

@@ -1,3 +1,18 @@
 # Colored LS on mac
 export TERM="xterm-color"
 export CLICOLOR=1
+
+# Homebrew
+function installBrew() {
+  xcode-select --install
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+}
+promptInstall brew installBrew
+
+# Mac git credentials with homebrew
+function installGit() {
+  brew install git
+  git config --global credential.helper osxkeychain
+}
+promptInstall git installGit
+

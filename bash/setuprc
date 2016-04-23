@@ -1,0 +1,15 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+function promptInstall() {
+  if [[ -z $(which $1) ]]; then
+    echo "Hey, I noticed that $1 isn't installed. Lemme take care of that for you."
+    read -p "Want me to install it? "
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      $2;
+    fi
+  fi
+}
+export -f promptInstall
