@@ -48,13 +48,18 @@ Plugin 'haya14busa/incsearch.vim' " Incremental search
 Plugin 'airblade/vim-gitgutter' " Git diffs inline
 Plugin 'altercation/vim-colors-solarized' " Solarized
 Plugin 'tpope/vim-fugitive' " Git wrappers for vim
-Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
+" let g:loaded_youcompleteme = 1  " XXX UNCOMMENT ME TO DISABLE YCM
+Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
 " ----------------------------------------------
 " ------------------ ctags ---------------------
 set tags=tags;/
+" -------------- YouCompleteMe -----------------
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_always_populate_location_list = 1
 " ----------------------------------------------
 " ---------------- incsearch -------------------
 " Incsearch, highlight while searching.
@@ -101,6 +106,7 @@ fun! TrimWhitespace()
 endfun
 
 " In visual mode, Ctrl+c/p to copy paste
+set clipboard=unnamedplus
 vmap <C-c> "+y<CR>
 vmap <C-p> "+p<CR>
 
@@ -239,13 +245,8 @@ nnoremap k gk
 
 inoremap <C-s> ✔
 inoremap <C-x> ✘
+inoremap <C-d> ~~~
 
-set listchars=tab:>-,trail:-
-set list
-set tabstop=2
-set shiftwidth=2
-set expandtab
-set cindent
 set incsearch
 set hlsearch
 set ignorecase
@@ -274,3 +275,23 @@ autocmd BufNewFile,BufRead *.txt
 au BufRead,BufNewFile *.scons set filetype=python
 
 set t_ut=
+
+" Tabs, trailing spaces
+
+if 0
+  " Tabs are Tabs
+  set tabstop=4
+  set shiftwidth=4
+  set softtabstop=4
+  set noexpandtab
+  set listchars=tab:\|\ ,trail:_
+  set list
+else
+  " Tabs are Spaces
+  set tabstop=4
+  set shiftwidth=4
+  set softtabstop=4
+  set expandtab
+  set listchars=tab:>-,trail:_
+  set list
+endif

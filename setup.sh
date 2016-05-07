@@ -40,6 +40,8 @@ function install_rc_files () {
 
   echo "About to delete .vimrc and replace it with symlink."
   confirm && mv -f ~/.vimrc ~/backup_rc; rm -f ~/.vimrc; ln -s ${SMKLEINRC_PATH}/vim/vimrc ~/.vimrc
+  echo "About to delete .ycm_extra_conf.py and replace it with symlink."
+  confirm && mv -f ~/.ycm_extra_conf.py ~/backup_rc; rm -f ~/.ycm_extra_conf.py; ln -s ${SMKLEINRC_PATH}/vim/ycm_extra_conf.py ~/.ycm_extra_conf.py
 
   echo "About to delete .tmux and replace it with symlink."
   confirm && mv -f ~/.tmux.conf ~/backup_rc; rm -f ~/.tmux.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux.conf ~/.tmux.conf
@@ -57,6 +59,10 @@ function install_rc_files () {
 
   echo "Install Vundle plugins"
   confirm && vim +PluginInstall +qall
+
+  echo "Install YCM"
+  confirm && cd ~/.vim/bundle/YouCompleteMe && ./install.py --clang-completer
+  cd -
 
   echo "Replacing .vim/syntax with symlink."
   confirm && rm -rf ~/.vim/syntax; ln -s ${SMKLEINRC_PATH}/.vim/syntax ~/.vim/syntax
