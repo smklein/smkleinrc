@@ -15,6 +15,15 @@ confirm () {
     esac
 }
 
+backup () {
+    if [ -z "$1" ]
+    then
+        echo "Backing up a file requires an input..."
+        exit 1
+    fi
+    mv -f $1 ~/backup_rc || true
+}
+
   echo "   ~~~ SETTING UP ~~~   "
 echo "I think the smkleinrc is >>> [$SMKLEINRC_PATH] <<< "
 if [ -d "${SMKLEINRC_PATH}" ]; then
@@ -36,15 +45,15 @@ function install_rc_files () {
   mkdir -p ~/backup_rc
 
   echo "About to delete .bashrc and replace it with symlink."
-  confirm && mv -f ~/.bashrc ~/backup_rc; rm -f ~/.bashrc; ln -s ${SMKLEINRC_PATH}/bash/bashrc ~/.bashrc
+  confirm && backup ~/.bashrc; rm -f ~/.bashrc; ln -s ${SMKLEINRC_PATH}/bash/bashrc ~/.bashrc
 
   echo "About to delete .vimrc and replace it with symlink."
-  confirm && mv -f ~/.vimrc ~/backup_rc; rm -f ~/.vimrc; ln -s ${SMKLEINRC_PATH}/vim/vimrc ~/.vimrc
+  confirm && backup ~/.vimrc; rm -f ~/.vimrc; ln -s ${SMKLEINRC_PATH}/vim/vimrc ~/.vimrc
   echo "About to delete .ycm_extra_conf.py and replace it with symlink."
-  confirm && mv -f ~/.ycm_extra_conf.py ~/backup_rc; rm -f ~/.ycm_extra_conf.py; ln -s ${SMKLEINRC_PATH}/vim/ycm_extra_conf.py ~/.ycm_extra_conf.py
+  confirm && backup ~/.ycm_extra_conf.py; rm -f ~/.ycm_extra_conf.py; ln -s ${SMKLEINRC_PATH}/vim/ycm_extra_conf.py ~/.ycm_extra_conf.py
 
   echo "About to delete .tmux and replace it with symlink."
-  confirm && mv -f ~/.tmux.conf ~/backup_rc; rm -f ~/.tmux.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux.conf ~/.tmux.conf
+  confirm && backup ~/.tmux.conf; rm -f ~/.tmux.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux.conf ~/.tmux.conf
 
   mkdir -p ~/.vim
 
