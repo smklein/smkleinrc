@@ -32,6 +32,7 @@ function install_rc_files () {
   echo "   ~~~ INSTALLING *.RC FILES ~~~   "
   echo "This script will delete your local *.rc files and replace them with my own."
 
+  rm -rf ~/backup_rc
   mkdir -p ~/backup_rc
 
   echo "About to delete .bashrc and replace it with symlink."
