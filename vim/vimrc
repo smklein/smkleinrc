@@ -48,13 +48,18 @@ Plugin 'haya14busa/incsearch.vim' " Incremental search
 Plugin 'airblade/vim-gitgutter' " Git diffs inline
 Plugin 'altercation/vim-colors-solarized' " Solarized
 Plugin 'tpope/vim-fugitive' " Git wrappers for vim
-Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
+" let g:loaded_youcompleteme = 1  " XXX UNCOMMENT ME TO DISABLE YCM
+Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
 " ----------------------------------------------
 " ------------------ ctags ---------------------
 set tags=tags;/
+" -------------- YouCompleteMe -----------------
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_always_populate_location_list = 1
 " ----------------------------------------------
 " ---------------- incsearch -------------------
 " Incsearch, highlight while searching.
