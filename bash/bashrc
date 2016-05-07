@@ -241,6 +241,7 @@ function md5() {
 
 # Git aliases
 function gcm() { git commit -a -m "$*" ;}
+function gam() { git commit -a --amend -m "$*" ;}
 alias gdfno='git diff `git rev-parse @{u}` --name-only'
 alias gdfns='git diff `git rev-parse @{u}` --name-status'
 alias gb='git branch'
