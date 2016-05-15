@@ -2,6 +2,20 @@
 set -u
 set -e
 
+# It is important that this is set correctly...
+export SMKLEINRC_PATH="/home/smklein/smkleinrc"
+
+unamestr=`uname`
+if [[ "$unamestr" == "Linux" ]]; then
+    echo "Running LINUX, eh?"
+    sudo apt-get install cmake vim-gnome python2.7-dev direnv clang llvm tmux
+elif [[ "$unamestr" == "Darwin" ]]; then
+    echo "Running MAC OS, eh?"
+else
+    echo "Unknown OS"
+    exit 1
+fi
+
 confirm () {
     # call with a prompt string or use a default
     read -r -p "${1:-Are you sure? [y/N/Control c to quit]} " response
@@ -24,7 +38,7 @@ backup () {
     mv -f $1 ~/backup_rc || true
 }
 
-  echo "   ~~~ SETTING UP ~~~   "
+echo "   ~~~ SETTING UP ~~~   "
 echo "I think the smkleinrc is >>> [$SMKLEINRC_PATH] <<< "
 if [ -d "${SMKLEINRC_PATH}" ]; then
   echo "It seems to be a directory, do you want to use it as the source of truth?";
