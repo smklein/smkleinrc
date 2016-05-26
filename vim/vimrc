@@ -49,7 +49,7 @@ Plugin 'airblade/vim-gitgutter' " Git diffs inline
 Plugin 'altercation/vim-colors-solarized' " Solarized
 Plugin 'tpope/vim-fugitive' " Git wrappers for vim
 Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
-" let g:loaded_youcompleteme = 1  " XXX UNCOMMENT ME TO DISABLE YCM
+let g:loaded_youcompleteme = 1  " XXX UNCOMMENT ME TO DISABLE YCM
 Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -200,8 +200,8 @@ augroup END
 " Settings for Solarized
 syntax enable
 set background=dark
-" Make .txt files light...
-autocmd BufRead,BufNewFile *.txt set background=light
+" Make .txt/.rst files light...
+autocmd BufRead,BufNewFile *.txt,*rst set background=light
 set term=xterm-256color
 let g:solarized_termcolors = 256
 let g:solarized_visibility = "high"
@@ -265,6 +265,11 @@ autocmd BufWinLeave * call clearmatches()
 " Highlight anything more than 80 characters
 " match Error '\%>80v.\+'
 highlight ColorColumn ctermbg=DarkMagenta
+
+
+let tabs_are_tabs=0
+let tab_size=2
+
 autocmd BufNewFile,BufRead *.java
       \ call matchadd('ColorColumn', '\%101v.\+', 100)
 autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
@@ -276,19 +281,19 @@ set t_ut=
 
 " Tabs, trailing spaces
 
-if 0
+if tabs_are_tabs
   " Tabs are Tabs
-  set tabstop=4
-  set shiftwidth=4
-  set softtabstop=4
+  let &tabstop=tab_size
+  let &shiftwidth=tab_size
+  let &softtabstop=tab_size
   set noexpandtab
   set listchars=tab:\|\ ,trail:_
   set list
 else
   " Tabs are Spaces
-  set tabstop=4
-  set shiftwidth=4
-  set softtabstop=4
+  let &tabstop=tab_size
+  let &shiftwidth=tab_size
+  let &softtabstop=tab_size
   set expandtab
   set listchars=tab:>-,trail:_
   set list

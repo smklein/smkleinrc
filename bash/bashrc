@@ -32,6 +32,8 @@ include ~/.pathrc
 
 alias tmux='tmux -2'
 
+alias bashrc='source ~/.bashrc'
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -140,6 +142,31 @@ function boop {
   echo -en '\a'
 }
 
+# Jiri download
+function jiri_bootstrap() {
+  if [[ "$#" -ne 1 ]]; then
+    echo "jiri_bootstrap [name of JIRI ROOT]"
+    return
+  fi
+  export JIRI_ROOT=`pwd`/$1
+  echo "--- Setting JIRI ROOT: "
+  echo $JIRI_ROOT
+  echo "--- Importing: "
+  echo "--- Downloading bootstrap Jiri"
+  curl -s https://raw.githubusercontent.com/vanadium/go.jiri/master/scripts/bootstrap_jiri | bash -s "$JIRI_ROOT"
+
+  echo "--- Downloaded bootstrap Jiri. Setting PATH, .envrc..."
+  echo "export JIRI_ROOT=\`pwd\`
+export PATH=\$JIRI_ROOT/.jiri_root/scripts:\$PATH" >> $1/.envrc
+  direnv allow $1
+  echo "--- JIRI_ROOT set, .envrc updated."
+
+  echo "--- Try using the following commands: "
+  echo -e "\$ ${CYAN}jiri import [manifest_name, relative to base of repo] [URL of manifest repo]${NC}"
+  echo -e "\$ ${CYAN}jiri update${NC}"
+}
+
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -160,6 +187,16 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# Used by PS1 Prompt
+reset="\[\033[0m\]";
+blue="\[\033[38;5;39m\]";
+cyan="\[\033[38;5;38m\]";
+green="\[\033[38;5;35m\]";
+purple="\[\033[38;5;134m\]";
+red="\[\033[38;5;196m\]";
+yellow="\[\033[38;5;227m\]";
+white="\[\033[38;5;250m\]";
+
 # TODO updateme:
 # .tar.gz or .tgz --> tar -xvzf
 # .tar.bz2 or .tbz --> tar -xvjf
@@ -170,11 +207,31 @@ function parse_git_dirty {
   [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
 }
 function parse_git_branch {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1$(parse_git_dirty)]/"
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
 }
 
-#PS1='\[\e[0;32m\]\u@\h\[\e[m\] \[\e[0;35m\]$(parse_git_branch)\[\e[m\] \[\e[0;34m\]\w\[\e[m\] \[\e[0;32m\]\$\[\e[m\] \[\e[0;37m\]'
-PS1='\[\e[0;35m\]$(parse_git_branch)\[\e[m\] \[\e[0;34m\]\w\[\e[m\] \[\e[0;32m\]\$\[\e[m\] \[\e[0;37m\]'
+function get_git_prompt {
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    top=`git rev-parse --show-toplevel`
+    bn=`basename $top`
+    fullremote=`git remote -v`
+    shortremote=`echo ${fullremote##*/} | cut -d "." -f1 | cut -d " " -f1`
+    branch=$(parse_git_branch)
+    echo "${cyan}[${purple}"$shortremote"${cyan} | ${purple}"$branch"${cyan}]"
+  fi
+}
+
+# Old PS1
+#PS1='\[\e[0;35m\]$(get_git_prompt)\[\e[m\] \[\e[0;34m\]\w\[\e[m\] \[\e[0;32m\]\$\[\e[m\] \[\e[0;37m\]'
+
+# Preamble
+set_bash_prompt() {
+  PS1="\[\033]0;\w\007\]";
+  PS1+="$(get_git_prompt) "; # username
+  PS1+="${green}\w "; # working directory
+  PS1+="${cyan}\$ ${reset}"; # `$` (and reset color)
+}
+PROMPT_COMMAND=set_bash_prompt
 
 # COLORS! YAY!
 RED='\033[0;31m'
@@ -240,6 +297,17 @@ function md5() {
 }
 
 # Git aliases
+alias gitgood='echo -e "GIT COMMANDS:
+$ ${CYAN}gupstream${NC} -- set upstream to origin/master
+$ ${CYAN}gmpush${NC} -- push to remote upstream master (from this current branch)
+$ ${CYAN}gcm${NC} -- git commit all with a message
+$ ${CYAN}gam${NC} -- gcm, but ammend instead of making a new commit
+$ ${CYAN}gdf${NC} -- show diffs with upstream
+$ ${CYAN}gsb${NC} -- select a branch
+"'
+
+function gupstream() { git branch -u origin/master; }
+function gmpush() { git push origin `git rev-parse --abbrev-ref HEAD`:master; }
 function gcm() { git commit -a -m "$*" ;}
 function gam() { git commit -a --amend -m "$*" ;}
 alias gdfno='git diff `git rev-parse @{u}` --name-only'
