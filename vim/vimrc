@@ -266,37 +266,47 @@ autocmd BufWinLeave * call clearmatches()
 " match Error '\%>80v.\+'
 highlight ColorColumn ctermbg=DarkMagenta
 
+let g:tabs_are_tabs=0
+let g:tab_size=2
 
-let tabs_are_tabs=0
-let tab_size=2
-
+" Good to know about autcmd: These commands run AFTER the entire .vimrc file is
+" processed. Just a heads up.
 autocmd BufNewFile,BufRead *.java
       \ call matchadd('ColorColumn', '\%101v.\+', 100)
 autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
       \ call matchadd('ColorColumn', '\%81v.\+', 100)
+autocmd BufRead,BufNewFile *.scons
+      \ set filetype=python
 autocmd BufNewFile,BufRead *.txt
       \ set nocindent
 
-au BufRead,BufNewFile *.scons set filetype=python
+function SetFileGo()
+  let g:tabs_are_tabs=1
+  let g:tab_size=4
+  call DoTabSettings()
+endfunction
+autocmd BufNewFile,BufRead *.go
+      \ call SetFileGo()
 
+" Required to be set as empty for a clean background with tmux / solarized.
 set t_ut=
 
 " Tabs, trailing spaces
+function DoTabSettings()
+  let &tabstop=g:tab_size
+  let &shiftwidth=g:tab_size
+  let &softtabstop=g:tab_size
+  if g:tabs_are_tabs
+    " Tabs are Tabs
+    set noexpandtab
+    set nolist
+  else
+    " Tabs are Spaces
+    set expandtab
+    set listchars=tab:>-,trail:_
+    set list
+  endif
+endfunction
 
-if tabs_are_tabs
-  " Tabs are Tabs
-  let &tabstop=tab_size
-  let &shiftwidth=tab_size
-  let &softtabstop=tab_size
-  set noexpandtab
-  set listchars=tab:\|\ ,trail:_
-  set list
-else
-  " Tabs are Spaces
-  let &tabstop=tab_size
-  let &shiftwidth=tab_size
-  let &softtabstop=tab_size
-  set expandtab
-  set listchars=tab:>-,trail:_
-  set list
-endif
+" Call with default settings
+call DoTabSettings()
