@@ -2,26 +2,6 @@
 set -u
 set -e
 
-# It is important that this is set correctly...
-export SMKLEINRC_PATH="/home/smklein/smkleinrc"
-
-# Configure git stuff
-git config --global user.email seanmarionklein@gmail.com
-git config --global user.name "Sean Klein"
-git config --global credential.helper 'cache --timeout=36000'
-
-unamestr=`uname`
-if [[ "$unamestr" == "Linux" ]]; then
-    echo "Running LINUX, eh?"
-    sudo apt-get install cmake vim-gnome python2.7-dev direnv clang llvm tmux
-elif [[ "$unamestr" == "Darwin" ]]; then
-    echo "Running MAC OS, eh?"
-    echo "TODO -- brew install some fun stuff"
-else
-    echo "Unknown OS"
-    exit 1
-fi
-
 confirm () {
     # call with a prompt string or use a default
     read -r -p "${1:-Are you sure? [yY/nN/Control c to quit]} " response
@@ -34,6 +14,30 @@ confirm () {
             ;;
     esac
 }
+
+# It is important that this is set correctly...
+export SMKLEINRC_PATH="/home/smklein/smkleinrc"
+
+# Configure git stuff
+git config --global user.email seanmarionklein@gmail.com
+git config --global user.name "Sean Klein"
+# 10 hours for git creds
+git config --global credential.helper 'cache --timeout=36000'
+# Stop that annoying "old style git push" crap
+git config --global push.default simple
+
+unamestr=`uname`
+if [[ "$unamestr" == "Linux" ]]; then
+    echo "Running LINUX, eh?"
+    echo "Wanna apt-get a bunch of fun stuff?"
+    confirm && sudo apt-get install cmake vim-gnome python2.7-dev direnv clang llvm tmux golang-go
+elif [[ "$unamestr" == "Darwin" ]]; then
+    echo "Running MAC OS, eh?"
+    echo "TODO -- brew install some fun stuff"
+else
+    echo "Unknown OS"
+    exit 1
+fi
 
 backup () {
     if [ -z "$1" ]; then
