@@ -277,8 +277,15 @@ autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
       \ call matchadd('ColorColumn', '\%81v.\+', 100)
 autocmd BufRead,BufNewFile *.scons
       \ set filetype=python
-autocmd BufNewFile,BufRead *.txt
-      \ set nocindent
+
+function SetFileText()
+  " Don't autoindent on enter (like a C file)
+  set nocindent
+  " Automatic word wrapping to 80 characters
+  set tw=80
+endfunction
+autocmd BufNewFile,BufRead *.txt,*.md
+      \ call SetFileText()
 
 function SetFileGo()
   let g:tabs_are_tabs=1
