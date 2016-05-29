@@ -296,6 +296,39 @@ function md5() {
   echo `md5sum $1 | awk '{ print $1 }'`
 }
 
+# TODO(smklein): Move these "help" commands to a new
+# file someday...
+
+BLUE_PLUS="${BLUE}+${CYAN}"
+# Tmux commands
+alias tmuxgood='echo -e "Pfx: Control-a
+${PURPLE}WINDOWS${NC}
+  ${CYAN}Pfx ${BLUE_PLUS} c${NC}: Make new window
+  ${CYAN}Pfx ${BLUE_PLUS} ,${NC}: Rename window
+  ${CYAN}Pfx ${BLUE_PLUS} ${ORANGE}#${NC}: Go to the window number #
+  ${CYAN}Pfx ${BLUE_PLUS} w${NC}: List windows, select a window
+  ${CYAN}Pfx ${BLUE_PLUS} n/p${NC}: Next / Previous window
+  ${CYAN}Pfx ${BLUE_PLUS} d${NC}: Close pane / window
+  ${CYAN}Pfx ${BLUE_PLUS} !${NC}: Break current pane into new window
+  ${CYAN}Pfx ${BLUE_PLUS} :swap-window -s ${ORANGE}#${CYAN} -t ${ORANGE}#${NC}: Swap windows by number.
+${PURPLE}PANES${NC}
+  ${CYAN}Pfx ${BLUE_PLUS} e${NC}: New Pane (right)
+  ${CYAN}Pfx ${BLUE_PLUS} s${NC}: New Pane (down)
+  ${CYAN}Pfx ${BLUE}(HOLD)${CYAN} ${BLUE_PLUS} Arrow Key${NC}: Resize pane
+  ${CYAN}Pfx ${BLUE_PLUS} z${NC}: Toggle full screen
+  ${CYAN}Pfx ${BLUE_PLUS} q${NC}: List panes
+  ${CYAN}Pfx ${BLUE_PLUS} q ${BLUE_PLUS} ${ORANGE}#${NC}: Go to pane #
+  ${CYAN}Pfx ${BLUE_PLUS} { / }${NC}: Swap pane with previous / next
+  ${CYAN}Pfx ${BLUE_PLUS} :swap-pane -s # -t #${NC}: Swap panes by number.
+${PURPLE}COPY/PASTING${NC}
+  ${CYAN}Pfx ${BLUE_PLUS} [${NC}: Enter Copy Mode
+    SPACE to select, ENTER to copy
+  ${CYAN}Pfx ${BLUE_PLUS} ]${NC}: Paste
+OH GEEZ I NEED HELP STILL
+  ${CYAN}Pfx ${BLUE_PLUS} ?${NC}: Get help
+"'
+
+
 # Git aliases
 alias gitgood='echo -e "GIT COMMANDS:
 $ ${CYAN}gupstream${NC} -- set upstream to origin/master
