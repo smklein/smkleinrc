@@ -96,6 +96,9 @@ confirm && install_rc_files
 
 function install_git_repos () {
   echo "   ~~~ INSTALLING GITHUB REPOS ~~~   "
+  if [ -z "${GITHUB_PATH:-}" ]; then
+    export GITHUB_PATH="${HOME}/repos"
+  fi
   echo "I think the github dump is >>> [$GITHUB_PATH] <<< "
   echo "Do you want to use it as a git dumping ground?"
   mkdir -p ${GITHUB_PATH}
