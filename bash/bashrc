@@ -82,12 +82,12 @@ esac
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
+      # We have color support; assume it's compliant with Ecma-48
+      # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+      # a case would tend to support setf rather than setaf.)
+      color_prompt=yes
+        else
+      color_prompt=
     fi
 fi
 
@@ -191,7 +191,7 @@ fi
 reset="\[\033[0m\]";
 blue="\[\033[38;5;39m\]";
 cyan="\[\033[38;5;38m\]";
-green="\[\033[38;5;35m\]";
+green="\[\033[38;5;46m\]";
 purple="\[\033[38;5;134m\]";
 red="\[\033[38;5;196m\]";
 yellow="\[\033[38;5;227m\]";

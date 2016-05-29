@@ -5,12 +5,18 @@ set -e
 # It is important that this is set correctly...
 export SMKLEINRC_PATH="/home/smklein/smkleinrc"
 
+# Configure git stuff
+git config --global user.email seanmarionklein@gmail.com
+git config --global user.name "Sean Klein"
+git config --global credential.helper 'cache --timeout=36000'
+
 unamestr=`uname`
 if [[ "$unamestr" == "Linux" ]]; then
     echo "Running LINUX, eh?"
     sudo apt-get install cmake vim-gnome python2.7-dev direnv clang llvm tmux
 elif [[ "$unamestr" == "Darwin" ]]; then
     echo "Running MAC OS, eh?"
+    echo "TODO -- brew install some fun stuff"
 else
     echo "Unknown OS"
     exit 1
@@ -18,9 +24,9 @@ fi
 
 confirm () {
     # call with a prompt string or use a default
-    read -r -p "${1:-Are you sure? [y/N/Control c to quit]} " response
+    read -r -p "${1:-Are you sure? [yY/nN/Control c to quit]} " response
     case $response in
-        [yY][eE][sS]|[yY])
+        [yY])
             true
             ;;
         *)
@@ -30,12 +36,13 @@ confirm () {
 }
 
 backup () {
-    if [ -z "$1" ]
-    then
+    if [ -z "$1" ]; then
         echo "Backing up a file requires an input..."
         exit 1
     fi
-    mv -f $1 ~/backup_rc || true
+    if [ -f "$1" ]; then
+      mv -f "$1" ${HOME}/backup_rc || true
+    fi
 }
 
 echo "   ~~~ SETTING UP ~~~   "
@@ -59,15 +66,19 @@ function install_rc_files () {
   mkdir -p ~/backup_rc
 
   echo "About to delete .bashrc and replace it with symlink."
-  confirm && backup ~/.bashrc; rm -f ~/.bashrc; ln -s ${SMKLEINRC_PATH}/bash/bashrc ~/.bashrc
+  backup ~/.bashrc; rm -f ~/.bashrc; ln -s ${SMKLEINRC_PATH}/bash/bashrc ~/.bashrc
 
   echo "About to delete .vimrc and replace it with symlink."
-  confirm && backup ~/.vimrc; rm -f ~/.vimrc; ln -s ${SMKLEINRC_PATH}/vim/vimrc ~/.vimrc
+  backup ~/.vimrc; rm -f ~/.vimrc; ln -s ${SMKLEINRC_PATH}/vim/vimrc ~/.vimrc
   echo "About to delete .ycm_extra_conf.py and replace it with symlink."
-  confirm && backup ~/.ycm_extra_conf.py; rm -f ~/.ycm_extra_conf.py; ln -s ${SMKLEINRC_PATH}/vim/ycm_extra_conf.py ~/.ycm_extra_conf.py
+  backup ~/.ycm_extra_conf.py; rm -f ~/.ycm_extra_conf.py; ln -s ${SMKLEINRC_PATH}/vim/ycm_extra_conf.py ~/.ycm_extra_conf.py
 
   echo "About to delete .tmux and replace it with symlink."
-  confirm && backup ~/.tmux.conf; rm -f ~/.tmux.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux.conf ~/.tmux.conf
+  backup ~/.tmux.conf; rm -f ~/.tmux.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux.conf ~/.tmux.conf
+  # I'm not going to bother confirming for the weirder tmux files we might want...
+  rm -f ~/.tmux_pre_2.1.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux_pre_2.1.conf ~/.tmux_pre_2.1.conf
+  rm -f ~/.tmux_post_2.1.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux_post_2.1.conf ~/.tmux_post_2.1.conf
+  rm -f ~/.load_tmux_conf.sh; ln -s ${SMKLEINRC_PATH}/tmux/load_tmux_conf.sh ~/.load_tmux_conf.sh
 
   mkdir -p ~/.vim
 
@@ -84,11 +95,12 @@ function install_rc_files () {
   confirm && vim +PluginInstall +qall
 
   echo "Install YCM"
+  cd .  # Yeah, this is weird, but we want OLDPWD to be set for the 'cd -' later.
   confirm && cd ~/.vim/bundle/YouCompleteMe && ./install.py --clang-completer
   cd -
 
   echo "Replacing .vim/syntax with symlink."
-  confirm && rm -rf ~/.vim/syntax; ln -s ${SMKLEINRC_PATH}/.vim/syntax ~/.vim/syntax
+  rm -rf ~/.vim/syntax; ln -s ${SMKLEINRC_PATH}/.vim/syntax ~/.vim/syntax
 }
 
 echo "Want me to re-install rc files?"
