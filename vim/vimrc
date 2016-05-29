@@ -114,7 +114,7 @@ set pastetoggle=<F5>
 set runtimepath+=$GOROOT/misc/vim
 
 " Always show filename...
-set statusline=%f           "file name
+set statusline=%F           "file name
 set statusline+=%=          "separator
 
 set statusline+=[Diff\ 

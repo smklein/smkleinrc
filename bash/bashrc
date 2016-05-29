@@ -326,7 +326,7 @@ ${PURPLE}COPY/PASTING${NC}
   ${CYAN}Pfx ${BLUE_PLUS} [${NC}: Enter Copy Mode
     SPACE to select, ENTER to copy
   ${CYAN}Pfx ${BLUE_PLUS} ]${NC}: Paste
-OH GEEZ I NEED HELP STILL
+${PURPLE}OH GEEZ I NEED HELP STILL${NC}
   ${CYAN}Pfx ${BLUE_PLUS} ?${NC}: Get help
 "'
 
