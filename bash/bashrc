@@ -323,7 +323,7 @@ ${PURPLE}PANES${NC}
   ${CYAN}Pfx ${BLUE_PLUS} { / }${NC}: Swap pane with previous / next
   ${CYAN}Pfx ${BLUE_PLUS} :swap-pane -s # -t #${NC}: Swap panes by number.
 ${PURPLE}COPY/PASTING${NC}
-  ${CYAN}Pfx ${BLUE_PLUS} [${NC}: Enter Copy Mode
+  ${CYAN}Pfx ${BLUE_PLUS} [${NC}: Enter Copy/Navigation Mode
     SPACE to select, ENTER to copy
   ${CYAN}Pfx ${BLUE_PLUS} ]${NC}: Paste
 ${PURPLE}OH GEEZ I NEED HELP STILL${NC}
