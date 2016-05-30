@@ -100,7 +100,7 @@ function install_rc_files () {
 
   echo "Install YCM"
   cd .  # Yeah, this is weird, but we want OLDPWD to be set for the 'cd -' later.
-  confirm && cd ~/.vim/bundle/YouCompleteMe && ./install.py --clang-completer
+  confirm && cd ~/.vim/bundle/YouCompleteMe && ./install.py --clang-completer --gocode-completer
   cd -
 
   echo "Replacing .vim/syntax with symlink."

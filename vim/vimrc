@@ -49,17 +49,54 @@ Plugin 'airblade/vim-gitgutter' " Git diffs inline
 Plugin 'altercation/vim-colors-solarized' " Solarized
 Plugin 'tpope/vim-fugitive' " Git wrappers for vim
 Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
-let g:loaded_youcompleteme = 1  " XXX UNCOMMENT ME TO DISABLE YCM
+Plugin 'fatih/vim-go' " Utilities for go + vim
+Plugin 'scrooloose/syntastic' " Syntax checker
 Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+" ----------------------------------------------
+" ----------------- Toggle ---------------------
+
+" Here, we have the ability to actvate (or deactivate) certain vim plugins.
+
+" YouCompleteMe -- "Commented" == "Enabled"
+"let g:loaded_youcompleteme = 1
+
+" YouCompleteMe -- "Commented" == "Enabled"
+" autocmd VimEnter * SyntasticToggleMode " disable syntastic by default
+
 " ----------------------------------------------
 " ------------------ ctags ---------------------
 set tags=tags;/
 " -------------- YouCompleteMe -----------------
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_always_populate_location_list = 1
+" ----------------------------------------------
+" ----------------- vim-go ---------------------
+" use goimports for formatting
+let g:go_fmt_command = "goimports"
+
+" turn highlighting on
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+
+" Open go doc in vertical window, horizontal, or tab
+au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
+au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef"<CR>
+au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
+" ----------------------------------------------
+" ---------------- syntastic -------------------
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2  " Do not auto-open, but DO auto-close.
+let g:syntastic_go_checkers = ['go', 'golint', 'errcheck']
+let g:syntastic_check_on_open = 1  " Check on first load and on save.
+let g:syntastic_check_on_wq = 0  " Don't bother checking when we quit.
+
 " ----------------------------------------------
 " ---------------- incsearch -------------------
 " Incsearch, highlight while searching.
@@ -114,8 +151,13 @@ set pastetoggle=<F5>
 set runtimepath+=$GOROOT/misc/vim
 
 " Always show filename...
-set statusline=%F           "file name
+set statusline+=%F           "file name
 set statusline+=%=          "separator
+
+" Syntastic-specific
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 
 set statusline+=[Diff\ 
 set statusline+=%{g:gitgutter_diff_args}
@@ -123,7 +165,6 @@ set statusline+=],
 
 set statusline+=%c          "column number
 set statusline+=,\[%l/%L\]  "row number / total rows
-set statusline+=\ %P        "percentage of way through file
 set laststatus=2
 " ----------------------------------------------
 

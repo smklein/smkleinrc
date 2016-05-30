@@ -72,18 +72,6 @@ flags = [
 '.',
 '-I',
 './ClangCompleter',
-'-I',
-'/usr/local/google/home/smklein/ssd/fuchsia/jiri/toolchain/llvm/tools/clang/include',
-'-I',
-'/usr/local/google/home/smklein/ssd/fuchsia/jiri/toolchain/llvm/include',
-'-isystem',
-'./tests/gmock/gtest',
-'-isystem',
-'./tests/gmock/gtest/include',
-'-isystem',
-'./tests/gmock',
-'-isystem',
-'./tests/gmock/include',
 ]
 
 
