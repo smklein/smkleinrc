@@ -21,15 +21,28 @@ let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'
 let g:gitgutter_sign_removed = '--'
 
+" 0 : Diff
+" 1 : Diff origin/master
+" 2 : Turn off
+let g:smklein_gitgutter_state = 0
+
 function ChangeGitgutterDiff()
-  if g:gitgutter_diff_args == ''
-    let g:gitgutter_diff_args = 'origin/master'
-  else
+  if g:smklein_gitgutter_state == 0
+    GitGutterSignsEnable
     let g:gitgutter_diff_args = ''
+    let g:smklein_gitgutter_state = 1
+  elseif g:smklein_gitgutter_state == 1
+    GitGutterSignsEnable
+    let g:gitgutter_diff_args = 'origin/master'
+    let g:smklein_gitgutter_state = 2
+  elseif g:smklein_gitgutter_state == 2
+    GitGutterSignsDisable
+    let g:gitgutter_diff_args = 'disabled'
+    let g:smklein_gitgutter_state = 0
   endif
 endfunction
 
-" Control-s to switch the diff we are viewing
+" Control-g to switch the diff we are viewing
 nnoremap <C-g> :call ChangeGitgutterDiff() \| :w<CR>
 " ----------------------------------------------
 
@@ -62,9 +75,9 @@ filetype plugin indent on    " required
 " Here, we have the ability to actvate (or deactivate) certain vim plugins.
 
 " YouCompleteMe -- "Commented" == "Enabled"
-"let g:loaded_youcompleteme = 1
+" let g:loaded_youcompleteme = 1
 
-" YouCompleteMe -- "Commented" == "Enabled"
+" Syntastic -- "Commented" == "Enabled"
 " autocmd VimEnter * SyntasticToggleMode " disable syntastic by default
 
 " ----------------------------------------------
@@ -73,6 +86,8 @@ set tags=tags;/
 " -------------- YouCompleteMe -----------------
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_always_populate_location_list = 1
+set completeopt-=preview
+
 " ----------------------------------------------
 " ----------------- vim-go ---------------------
 " use goimports for formatting
@@ -93,7 +108,8 @@ au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
 " ---------------- syntastic -------------------
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 2  " Do not auto-open, but DO auto-close.
-let g:syntastic_go_checkers = ['go', 'golint', 'errcheck']
+let g:syntastic_go_checkers = ['go', 'golint', 'errcheck', 'govet']
+let g:syntastic_aggregate_errors = 1  " I want as many errors as possible.
 let g:syntastic_check_on_open = 1  " Check on first load and on save.
 let g:syntastic_check_on_wq = 0  " Don't bother checking when we quit.
 
