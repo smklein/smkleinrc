@@ -315,6 +315,7 @@ ${PURPLE}WINDOWS${NC}
   ${CYAN}Pfx ${BLUE_PLUS} :swap-window -s ${ORANGE}#${CYAN} -t ${ORANGE}#${NC}: Swap windows by number.
 ${PURPLE}PANES${NC}
   ${CYAN}Pfx ${BLUE_PLUS} e${NC}: New Pane (right)
+  ${CYAN}Pfx ${BLUE_PLUS} E${NC}: Make new pane fit your dual monitor setup (requires 375 cols)
   ${CYAN}Pfx ${BLUE_PLUS} s${NC}: New Pane (down)
   ${CYAN}Pfx ${BLUE}(HOLD)${CYAN} ${BLUE_PLUS} Arrow Key${NC}: Resize pane
   ${CYAN}Pfx ${BLUE_PLUS} z${NC}: Toggle full screen
