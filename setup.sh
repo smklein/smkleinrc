@@ -16,7 +16,7 @@ confirm () {
 }
 
 # It is important that this is set correctly...
-export SMKLEINRC_PATH="/home/smklein/smkleinrc"
+export SMKLEINRC_PATH="$HOME/smkleinrc"
 
 # Configure git stuff
 git config --global user.email seanmarionklein@gmail.com
