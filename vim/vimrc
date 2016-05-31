@@ -108,7 +108,7 @@ au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
 " ---------------- syntastic -------------------
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 2  " Do not auto-open, but DO auto-close.
-let g:syntastic_go_checkers = ['go', 'golint', 'errcheck', 'govet']
+let g:syntastic_go_checkers = ['go', 'golint', 'errcheck']
 let g:syntastic_aggregate_errors = 1  " I want as many errors as possible.
 let g:syntastic_check_on_open = 1  " Check on first load and on save.
 let g:syntastic_check_on_wq = 0  " Don't bother checking when we quit.
