@@ -21,10 +21,11 @@ let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'
 let g:gitgutter_sign_removed = '--'
 
+" If you press Ctl-g when state is... : Gitgutter shows you...
 " 0 : Diff
 " 1 : Diff origin/master
 " 2 : Turn off
-let g:smklein_gitgutter_state = 0
+let g:smklein_gitgutter_state = 1
 
 function ChangeGitgutterDiff()
   if g:smklein_gitgutter_state == 0
