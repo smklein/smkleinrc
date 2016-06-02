@@ -33,7 +33,8 @@ if [[ "$unamestr" == "Linux" ]]; then
     confirm && sudo apt-get install cmake vim-gnome python2.7-dev direnv clang llvm tmux golang-go
 elif [[ "$unamestr" == "Darwin" ]]; then
     echo "Running MAC OS, eh?"
-    echo "TODO -- brew install some fun stuff"
+    echo "Wanna brew install a bunch of fun stuff?"
+    confirm && brew install vim cmake
 else
     echo "Unknown OS"
     exit 1
