@@ -336,6 +336,7 @@ ${PURPLE}OH GEEZ I NEED HELP STILL${NC}
 alias gitgood='echo -e "GIT COMMANDS:
 $ ${CYAN}gupstream${NC} -- set upstream to origin/master
 $ ${CYAN}gmpush${NC} -- push to remote upstream master (from this current branch)
+$ ${CYAN}gerritpatch${NC} -- Upload patch for gerrit code review
 $ ${CYAN}gcm${NC} -- git commit all with a message
 $ ${CYAN}gam${NC} -- gcm, but ammend instead of making a new commit
 $ ${CYAN}gdf${NC} -- show diffs with upstream
@@ -344,6 +345,7 @@ $ ${CYAN}gsb${NC} -- select a branch
 
 function gupstream() { git branch -u origin/master; }
 function gmpush() { git push origin `git rev-parse --abbrev-ref HEAD`:master; }
+function gerritpatch() { git push origin HEAD:refs/for/master ;}
 function gcm() { git commit -a -m "$*" ;}
 function gam() { git commit -a --amend -m "$*" ;}
 alias gdfno='git diff `git rev-parse @{u}` --name-only'

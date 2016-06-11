@@ -77,6 +77,10 @@ filetype plugin indent on    " required
 
 " YouCompleteMe -- "Commented" == "Enabled"
 " let g:loaded_youcompleteme = 1
+let g:ycm_filetype_blacklist = {
+      \ 'cpp' : 1,
+      \ 'c' : 1
+      \}
 
 " Syntastic -- "Commented" == "Enabled"
 " autocmd VimEnter * SyntasticToggleMode " disable syntastic by default
@@ -88,11 +92,17 @@ set tags=tags;/
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_always_populate_location_list = 1
 set completeopt-=preview
+let g:ycm_register_as_syntastic_checker = 0
 
 " ----------------------------------------------
 " ----------------- vim-go ---------------------
 " use goimports for formatting
 let g:go_fmt_command = "goimports"
+
+" The old regex engine is way faster
+set re=1
+set ttyfast
+set lazyredraw
 
 " turn highlighting on
 let g:go_highlight_functions = 1
@@ -100,6 +110,9 @@ let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
+
+" syntastic  VS  vim-go
+let g:syntastic_go_checkers = ['go', 'golint', 'govet', 'errcheck']
 
 " Open go doc in vertical window, horizontal, or tab
 au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
@@ -109,7 +122,6 @@ au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
 " ---------------- syntastic -------------------
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 2  " Do not auto-open, but DO auto-close.
-let g:syntastic_go_checkers = ['go', 'golint', 'errcheck']
 let g:syntastic_aggregate_errors = 1  " I want as many errors as possible.
 let g:syntastic_check_on_open = 1  " Check on first load and on save.
 let g:syntastic_check_on_wq = 0  " Don't bother checking when we quit.
@@ -332,9 +344,18 @@ let g:tab_size=2
 autocmd BufNewFile,BufRead *.java
       \ call matchadd('ColorColumn', '\%101v.\+', 100)
 autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
-      \ call matchadd('ColorColumn', '\%81v.\+', 100)
+      \ call SetFileC()
 autocmd BufRead,BufNewFile *.scons
       \ set filetype=python
+autocmd BufNewFile,BufRead *.txt,*.md
+      \ call SetFileText()
+autocmd BufNewFile,BufRead *.go
+      \ call SetFileGo()
+
+function SetFileC()
+  silent SyntasticToggleMode
+  call matchadd('ColorColumn', '\%81v.\+', 100)
+endfunction
 
 function SetFileText()
   " Don't autoindent on enter (like a C file)
@@ -342,16 +363,12 @@ function SetFileText()
   " Automatic word wrapping to 80 characters
   set tw=80
 endfunction
-autocmd BufNewFile,BufRead *.txt,*.md
-      \ call SetFileText()
 
 function SetFileGo()
   let g:tabs_are_tabs=1
   let g:tab_size=4
   call DoTabSettings()
 endfunction
-autocmd BufNewFile,BufRead *.go
-      \ call SetFileGo()
 
 " Required to be set as empty for a clean background with tmux / solarized.
 set t_ut=
