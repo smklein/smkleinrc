@@ -76,7 +76,7 @@ filetype plugin indent on    " required
 " Here, we have the ability to actvate (or deactivate) certain vim plugins.
 
 " YouCompleteMe -- "Commented" == "Enabled"
-" let g:loaded_youcompleteme = 1
+let g:loaded_youcompleteme = 1
 let g:ycm_filetype_blacklist = {
       \ 'cpp' : 1,
       \ 'c' : 1
@@ -98,6 +98,12 @@ let g:ycm_register_as_syntastic_checker = 0
 " ----------------- vim-go ---------------------
 " use goimports for formatting
 let g:go_fmt_command = "goimports"
+let g:go_fmt_autosave = 0
+
+" I'm doing the go_fmtting myself. I don't want vim-go to override my vimrc
+" variables.
+set autoread
+au BufWritePost *.go :silent execute "!goimports -w %" | redraw!
 
 " The old regex engine is way faster
 set re=1
@@ -115,9 +121,9 @@ let g:go_highlight_build_constraints = 1
 let g:syntastic_go_checkers = ['go', 'golint', 'govet', 'errcheck']
 
 " Open go doc in vertical window, horizontal, or tab
-au Filetype go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
+let mapleader=","
+au Filetype go nnoremap <leader>e :vsp <CR>:exe "GoDef" <CR>
 au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef"<CR>
-au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
 " ----------------------------------------------
 " ---------------- syntastic -------------------
 let g:syntastic_always_populate_loc_list = 1
@@ -172,9 +178,9 @@ fun! TrimWhitespace()
 endfun
 
 " In visual mode, Ctrl+c/p to copy paste
-set clipboard=unnamedplus
-vmap <C-c> "+y<CR>
-vmap <C-p> "+p<CR>
+vmap <C-c> :w! ~/.vbuf<CR>
+nmap <C-c> :.w! ~/.vbuf<CR>
+nmap <C-p> :r ~/.vbuf<CR>
 
 set pastetoggle=<F5>
 set runtimepath+=$GOROOT/misc/vim
@@ -355,16 +361,20 @@ autocmd BufNewFile,BufRead *.go
 function SetFileC()
   silent SyntasticToggleMode
   call matchadd('ColorColumn', '\%81v.\+', 100)
+  let g:tabs_are_tabs=0
+  let g:tab_size=4
+  call DoTabSettings()
 endfunction
 
 function SetFileText()
   " Don't autoindent on enter (like a C file)
   set nocindent
   " Automatic word wrapping to 80 characters
-  set tw=80
+  set textwidth=80
 endfunction
 
 function SetFileGo()
+  set textwidth=100
   let g:tabs_are_tabs=1
   let g:tab_size=4
   call DoTabSettings()
