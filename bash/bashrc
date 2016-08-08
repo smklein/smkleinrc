@@ -261,30 +261,11 @@ alias helpme='echo -e "GUIDE: ${CYAN}Tool, ${GREEN}command, ${BLUE}required args
         ${CYAN}git${NC} ${GREEN}map${NC} -- ${RED}View map of commits${NC}
         ${CYAN}git${NC} ${GREEN}map-branches${NC} -- ${RED}View map of branches${NC}
         ${CYAN}git${NC} ${GREEN}grep stringpattern -- "filepattern"${NC}
-    ${CYAN}scons${NC} Commands:
-        ${CYAN}./scons -j32${NC} -- ${RED}Build NaCl${NC}
-        ${CYAN}./scons MODE=opt-linux,nacl small_tests${NC} -- ${RED}Run tests${NC}
     ${CYAN}Macros:${NC}
         ${CYAN}nvs ${BLUE}<number>${NC} -- ${RED}Set NACLVERBOSITY level${NC}
-    ${CYAN}SSH Stuff:${NC}
-        ${CYAN}ssh${NC} ${BLUE}<slave name>${GREEN}.golo${NC} -- ${RED}SSH${NC}
-        ${CYAN}ssh${NC} ${BLUE}master4${GREEN}.golo${NC} -- ${RED}SSH${NC}
-        ${CYAN}ssh${NC} ${BLUE}slave704-c4${NC} -- ${RED}SSH${NC}
-        ${CYAN}make stop${NC} -- ${RED}STOP machine from being used by others.${NC}
-        ${CYAN}make start${NC} -- ${RED}GIVE machine back to others.${NC}
-        ${CYAN}git${NC} ${GREEN}cl patch${NC} ${BLUE}<Issue num>${NC} -- ${RED} Apply patch to current machine.${NC}
     ${CYAN}Shortcuts:${NC}
-        ${CYAN}nacldir${NC}
-        ${CYAN}google3${NC}
         ${CYAN}ff / gff / gcm / gdf${NC}
 "'
-
-# nvz = "nacl verbosity zero". nvs = "nacl verbosity set".
-alias nvz='export NACLVERBOSITY=0; echo $NACLVERBOSITY'
-function nvs {
-    export NACLVERBOSITY=$1
-    echo $NACLVERBOSITY
-}
 
 # Find filename
 alias ff='find . | grep'

@@ -357,6 +357,8 @@ autocmd BufNewFile,BufRead *.txt,*.md
       \ call SetFileText()
 autocmd BufNewFile,BufRead *.go
       \ call SetFileGo()
+autocmd BufRead,BufNewFile *.mojom
+      \ set filetype=mojom
 
 function SetFileC()
   silent SyntasticToggleMode
