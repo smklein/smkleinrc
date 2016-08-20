@@ -96,6 +96,12 @@ set completeopt-=preview
 let g:ycm_register_as_syntastic_checker = 0
 
 " ----------------------------------------------
+" ----------------- vim-rust -------------------
+
+" Automatically run `:RustFmt` on save
+let g:rustfmt_autosave = 1
+
+" ----------------------------------------------
 " ----------------- vim-go ---------------------
 " use goimports for formatting
 let g:go_fmt_command = "goimports"
