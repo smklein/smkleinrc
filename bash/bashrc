@@ -326,7 +326,13 @@ $ ${CYAN}gsb${NC} -- select a branch
 
 function gupstream() { git branch -u origin/master; }
 function gmpush() { git push origin `git rev-parse --abbrev-ref HEAD`:master; }
-function gerritpatch() { git push origin HEAD:refs/for/master ;}
+function gerritpatch() {
+  if [ "$#" -eq 1 ]; then
+    git push origin HEAD:refs/for/$1
+    return
+  fi
+  echo "Whomp. Try this: $ gerritpatch [Remote Branch]"
+}
 function gcm() { git commit -a -m "$*" ;}
 function gam() { git commit -a --amend -m "$*" ;}
 alias gdfno='git diff `git rev-parse @{u}` --name-only'

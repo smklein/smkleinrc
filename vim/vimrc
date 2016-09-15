@@ -358,7 +358,7 @@ autocmd BufNewFile,BufRead *.txt,*.md
 autocmd BufNewFile,BufRead *.go
       \ call SetFileGo()
 autocmd BufRead,BufNewFile *.mojom
-      \ set filetype=mojom
+      \ call SetFileMojom()
 
 function SetFileC()
   silent SyntasticToggleMode
@@ -380,6 +380,11 @@ function SetFileGo()
   let g:tabs_are_tabs=1
   let g:tab_size=4
   call DoTabSettings()
+endfunction
+
+function SetFileMojom()
+  set textwidth=100
+  set filetype=mojom
 endfunction
 
 " Required to be set as empty for a clean background with tmux / solarized.
