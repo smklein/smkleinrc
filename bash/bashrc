@@ -324,6 +324,9 @@ $ ${CYAN}gdf${NC} -- show diffs with upstream
 $ ${CYAN}gsb${NC} -- select a branch
 "'
 
+function gmb() {
+  git log --graph --all --decorate --simplify-by-decoration --oneline;
+}
 function gupstream() { git branch -u origin/master; }
 function gmpush() { git push origin `git rev-parse --abbrev-ref HEAD`:master; }
 function gerritpatch() {

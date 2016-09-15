@@ -64,6 +64,7 @@ Plugin 'altercation/vim-colors-solarized' " Solarized
 Plugin 'tpope/vim-fugitive' " Git wrappers for vim
 Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
 Plugin 'fatih/vim-go' " Utilities for go + vim
+Plugin 'rust-lang/rust.vim' " Rust language
 Plugin 'scrooloose/syntastic' " Syntax checker
 Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
@@ -95,6 +96,11 @@ set completeopt-=preview
 let g:ycm_register_as_syntastic_checker = 0
 
 " ----------------------------------------------
+" ----------------- vim-rust -------------------
+
+" No config atm
+
+" ----------------------------------------------
 " ----------------- vim-go ---------------------
 " use goimports for formatting
 let g:go_fmt_command = "goimports"
@@ -118,7 +124,7 @@ let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 
 " syntastic  VS  vim-go
-let g:syntastic_go_checkers = ['go', 'golint', 'govet', 'errcheck']
+let g:syntastic_go_checkers = ['go', 'govet', 'errcheck']
 
 " Open go doc in vertical window, horizontal, or tab
 let mapleader=","
