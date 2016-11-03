@@ -183,9 +183,9 @@ fun! TrimWhitespace()
     call setpos('.', l:save_cursor)
 endfun
 
-" In visual mode, Ctrl+c/p to copy paste
+" In visual mode, Ctrl+c to copy
 vmap <C-c> :w! ~/.vbuf<CR>
-nmap <C-c> :.w! ~/.vbuf<CR>
+" In normal mode, Ctrl+p to paste
 nmap <C-p> :r ~/.vbuf<CR>
 
 set pastetoggle=<F5>
@@ -355,8 +355,10 @@ let g:tab_size=2
 " processed. Just a heads up.
 autocmd BufNewFile,BufRead *.java
       \ call matchadd('ColorColumn', '\%101v.\+', 100)
-autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.py,*.h
+autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.h
       \ call SetFileC()
+autocmd BufNewFile,BufRead *.py
+      \ call SetFilePython()
 autocmd BufRead,BufNewFile *.scons
       \ set filetype=python
 autocmd BufNewFile,BufRead *.txt,*.md
@@ -367,6 +369,14 @@ autocmd BufRead,BufNewFile *.mojom
       \ call SetFileMojom()
 
 function SetFileC()
+  silent SyntasticToggleMode
+  call matchadd('ColorColumn', '\%81v.\+', 100)
+  let g:tabs_are_tabs=0
+  let g:tab_size=4
+  call DoTabSettings()
+endfunction
+
+function SetFilePython()
   silent SyntasticToggleMode
   call matchadd('ColorColumn', '\%81v.\+', 100)
   let g:tabs_are_tabs=0
