@@ -30,6 +30,8 @@ include ~/.googlerc
 include ~/.pathrc
 # XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
 
+source ${SMKLEINRC_PATH}/git/git-completion.bash
+
 alias tmux='tmux -2'
 
 alias bashrc='source ~/.bashrc'
