@@ -132,8 +132,9 @@ function install_git_repos () {
     fi
 
   }
-  install_one_git_repo private https://github.com/smklein/private.git
+  # install_one_git_repo private https://github.com/smklein/private.git
   install_one_git_repo blog https://github.com/smklein/smklein.github.io.git
+  install_one_git_repo depot_tools https://chromium.googlesource.com/chromium/tools/depot_tools.git
 }
 
 echo "Want me to re-install git repos?"

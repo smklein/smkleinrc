@@ -30,6 +30,14 @@ include ~/.googlerc
 include ~/.pathrc
 # XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
 
+export FUCHSIA_ROOT=~/fuchsia
+function fuchsia() {
+  source $FUCHSIA_ROOT/scripts/env.sh && envprompt && fgo && fset x86-64 "$@"
+}
+
+source ${SMKLEINRC_PATH}/git/git-completion.bash
+export PATH=${GITHUB_PATH}/depot_tools:"$PATH"
+
 alias tmux='tmux -2'
 
 alias bashrc='source ~/.bashrc'
@@ -141,31 +149,6 @@ function boop {
   sleep 0.2
   echo -en '\a'
 }
-
-# Jiri download
-function jiri_bootstrap() {
-  if [[ "$#" -ne 1 ]]; then
-    echo "jiri_bootstrap [name of JIRI ROOT]"
-    return
-  fi
-  export JIRI_ROOT=`pwd`/$1
-  echo "--- Setting JIRI ROOT: "
-  echo $JIRI_ROOT
-  echo "--- Importing: "
-  echo "--- Downloading bootstrap Jiri"
-  curl -s https://raw.githubusercontent.com/vanadium/go.jiri/master/scripts/bootstrap_jiri | bash -s "$JIRI_ROOT"
-
-  echo "--- Downloaded bootstrap Jiri. Setting PATH, .envrc..."
-  echo "export JIRI_ROOT=\`pwd\`
-export PATH=\$JIRI_ROOT/.jiri_root/scripts:\$PATH" >> $1/.envrc
-  direnv allow $1
-  echo "--- JIRI_ROOT set, .envrc updated."
-
-  echo "--- Try using the following commands: "
-  echo -e "\$ ${CYAN}jiri import [manifest_name, relative to base of repo] [URL of manifest repo]${NC}"
-  echo -e "\$ ${CYAN}jiri update${NC}"
-}
-
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -328,6 +311,9 @@ $ ${CYAN}gdf${NC} -- show diffs with upstream
 $ ${CYAN}gsb${NC} -- select a branch
 "'
 
+function gmp() {
+  git map-branches
+}
 function gmb() {
   git log --graph --all --decorate --simplify-by-decoration --oneline;
 }
