@@ -30,6 +30,11 @@ include ~/.googlerc
 include ~/.pathrc
 # XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
 
+export FUCHSIA_ROOT=~/fuchsia
+function fuchsia() {
+  source $FUCHSIA_ROOT/scripts/env.sh && envprompt && fgo && fset x86-64 "$@"
+}
+
 source ${SMKLEINRC_PATH}/git/git-completion.bash
 export PATH=${GITHUB_PATH}/depot_tools:"$PATH"
 
