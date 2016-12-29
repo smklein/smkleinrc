@@ -270,6 +270,8 @@ alias helpme='echo -e "GUIDE: ${CYAN}Tool, ${GREEN}command, ${BLUE}required args
 # Find filename
 alias ff='find . | grep'
 alias gff='git ls-files | grep'
+alias gs='git status'
+alias gmp='git map-branches'
 
 alias filesize='stat --printf="%s"'
 
@@ -403,6 +405,11 @@ function gra() { # Git Rebase All
   DO_REBASE=1
   while [ $DO_REBASE -eq 1 ]; do
     git rebase
+    case $? in
+      0) echo "Rebase success" ;;
+      *) echo "Rebase failure"; return ;;
+    esac
+
     ggd
     DO_REBASE=$?
   done

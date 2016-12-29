@@ -370,7 +370,8 @@ autocmd BufRead,BufNewFile *.mojom
 
 function SetFileC()
   silent SyntasticToggleMode
-  call matchadd('ColorColumn', '\%81v.\+', 100)
+  call matchadd('ColorColumn', '\%101v.\+', 100)
+  set textwidth=100
   let g:tabs_are_tabs=0
   let g:tab_size=4
   call DoTabSettings()
