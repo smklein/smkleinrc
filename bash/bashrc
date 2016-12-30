@@ -33,6 +33,14 @@ include ~/.googlerc
 include ~/.pathrc
 # XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
 
+export FUCHSIA_ROOT=~/fuchsia
+function fuchsia() {
+  source $FUCHSIA_ROOT/scripts/env.sh && envprompt && fgo && fset x86-64 "$@"
+}
+
+source ${SMKLEINRC_PATH}/git/git-completion.bash
+export PATH=${GITHUB_PATH}/depot_tools:"$PATH"
+
 alias tmux='tmux -2'
 
 alias bashrc='source ~/.bashrc'
@@ -145,31 +153,6 @@ function boop {
   echo -en '\a'
 }
 
-# Jiri download
-function jiri_bootstrap() {
-  if [[ "$#" -ne 1 ]]; then
-    echo "jiri_bootstrap [name of JIRI ROOT]"
-    return
-  fi
-  export JIRI_ROOT=`pwd`/$1
-  echo "--- Setting JIRI ROOT: "
-  echo $JIRI_ROOT
-  echo "--- Importing: "
-  echo "--- Downloading bootstrap Jiri"
-  curl -s https://raw.githubusercontent.com/vanadium/go.jiri/master/scripts/bootstrap_jiri | bash -s "$JIRI_ROOT"
-
-  echo "--- Downloaded bootstrap Jiri. Setting PATH, .envrc..."
-  echo "export JIRI_ROOT=\`pwd\`
-export PATH=\$JIRI_ROOT/.jiri_root/scripts:\$PATH" >> $1/.envrc
-  direnv allow $1
-  echo "--- JIRI_ROOT set, .envrc updated."
-
-  echo "--- Try using the following commands: "
-  echo -e "\$ ${CYAN}jiri import [manifest_name, relative to base of repo] [URL of manifest repo]${NC}"
-  echo -e "\$ ${CYAN}jiri update${NC}"
-}
-
-
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -273,6 +256,8 @@ alias helpme='echo -e "GUIDE: ${CYAN}Tool, ${GREEN}command, ${BLUE}required args
 # Find filename
 alias ff='find . | grep'
 alias gff='git ls-files | grep'
+alias gs='git status'
+alias gmp='git map-branches'
 
 alias filesize='stat --printf="%s"'
 
@@ -287,7 +272,9 @@ BLUE_PLUS="${BLUE}+${CYAN}"
 # Tmux commands
 alias tmuxgood='echo -e "Pfx: Control-a
 ${PURPLE}META${NC}
-  ${CYAN}Pfx ${BLUE_PLUS} r${NC}: Reload tmux config
+  ${CYAN}Pfx ${BLUE_PLUS} y${NC}: Reload tmux config
+  ${CYAN}Pfx ${BLUE_PLUS} s${NC}: Save tmux windows
+  ${CYAN}Pfx ${BLUE_PLUS} r${NC}: Reload tmux windows
 ${PURPLE}WINDOWS${NC}
   ${CYAN}Pfx ${BLUE_PLUS} c${NC}: Make new window
   ${CYAN}Pfx ${BLUE_PLUS} ,${NC}: Rename window
@@ -327,12 +314,21 @@ $ ${CYAN}gdf${NC} -- show diffs with upstream
 $ ${CYAN}gsb${NC} -- select a branch
 "'
 
+function gmp() {
+  git map-branches
+}
 function gmb() {
   git log --graph --all --decorate --simplify-by-decoration --oneline;
 }
 function gupstream() { git branch -u origin/master; }
 function gmpush() { git push origin `git rev-parse --abbrev-ref HEAD`:master; }
-function gerritpatch() { git push origin HEAD:refs/for/master ;}
+function gerritpatch() {
+  if [ "$#" -eq 1 ]; then
+    git push origin HEAD:refs/for/$1
+    return
+  fi
+  echo "Whomp. Try this: $ gerritpatch [Remote Branch]"
+}
 function gcm() { git commit -a -m "$*" ;}
 function gam() { git commit -a --amend -m "$*" ;}
 alias gdfno='git diff `git rev-parse @{u}` --name-only'
@@ -375,6 +371,37 @@ function gdf() { # Git diff file
     done
   fi
   IFS=$IFS_ORIGINAL
+}
+
+function ggd() { # Git Go Downstream
+  branches=()
+  eval "$(git for-each-ref --shell --format='branches+=(%(refname))' refs/heads/)"
+  for BRANCH in "${branches[@]}"; do
+    BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name "$BRANCH")
+    UPSTREAM=$(git rev-parse --abbrev-ref --symbolic-full-name "$BRANCH"@{upstream})
+    CURRENT=$(git rev-parse --abbrev-ref HEAD)
+    if [ "$UPSTREAM" == "$CURRENT" ]; then
+      echo "ggd: $CURRENT --> $BRANCH"
+      git checkout "$BRANCH"
+      return 1
+    fi
+  done
+  echo "ggd: Cannot go downstream"
+  return 0
+}
+
+function gra() { # Git Rebase All
+  DO_REBASE=1
+  while [ $DO_REBASE -eq 1 ]; do
+    git rebase
+    case $? in
+      0) echo "Rebase success" ;;
+      *) echo "Rebase failure"; return ;;
+    esac
+
+    ggd
+    DO_REBASE=$?
+  done
 }
 
 alias gsbno='git branch --list'
