@@ -16,6 +16,9 @@ include () {
 export SMKLEINRC_PATH=~/smkleinrc
 export GITHUB_PATH=~/repos
 
+# Default path for rust Cargo installs
+export PATH=$PATH:~/.cargo/bin
+
 # XXX XXX XXX XXX INCLUDE OTHER RC FILES HERE XXX XXX XXX XXX
 # This .bashrc file should be computer-agnostic!
 include ${SMKLEINRC_PATH}/bash/setuprc
