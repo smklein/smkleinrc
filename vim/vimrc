@@ -59,6 +59,7 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 " Keep Plugin commands between vundle#begin/end.
+Plugin 'scrooloose/syntastic' " Syntax checker
 Plugin 'haya14busa/incsearch.vim' " Incremental search
 Plugin 'airblade/vim-gitgutter' " Git diffs inline
 Plugin 'altercation/vim-colors-solarized' " Solarized
@@ -66,7 +67,6 @@ Plugin 'tpope/vim-fugitive' " Git wrappers for vim
 Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
 Plugin 'fatih/vim-go' " Utilities for go + vim
 Plugin 'rust-lang/rust.vim' " Rust language
-Plugin 'scrooloose/syntastic' " Syntax checker
 Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -80,8 +80,9 @@ filetype plugin indent on    " required
 " YouCompleteMe -- "Commented" == "Enabled"
 " let g:loaded_youcompleteme = 1
 let g:ycm_filetype_blacklist = {
+      \ 'go': 1,
       \ 'cpp' : 1,
-      \ 'c' : 1
+      \ 'c' : 1,
       \}
 
 " Syntastic -- "Commented" == "Enabled"
@@ -104,13 +105,13 @@ let g:rustfmt_autosave = 1
 " ----------------------------------------------
 " ----------------- vim-go ---------------------
 " use goimports for formatting
-let g:go_fmt_command = "goimports"
+let g:go_fmt_command = "gofmt"
 let g:go_fmt_autosave = 0
 
 " I'm doing the go_fmtting myself. I don't want vim-go to override my vimrc
 " variables.
 set autoread
-au BufWritePost *.go :silent execute "!goimports -w %" | redraw!
+au BufWritePost *.go :silent execute "!gofmt -w %" | redraw!
 
 " The old regex engine is way faster
 set re=1
@@ -133,6 +134,7 @@ au Filetype go nnoremap <leader>e :vsp <CR>:exe "GoDef" <CR>
 au Filetype go nnoremap <leader>s :sp <CR>:exe "GoDef"<CR>
 " ----------------------------------------------
 " ---------------- syntastic -------------------
+let g:syntastic_mode_map = { 'passive_filetypes': ['rust', 'vim'] }
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 2  " Do not auto-open, but DO auto-close.
 let g:syntastic_aggregate_errors = 1  " I want as many errors as possible.
@@ -266,6 +268,9 @@ command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
 
 " ----------------------------------------------
 
+" Highlight matching angle brackets
+set matchpairs+=<:>
+
 " Highlight TODOs and other important keywords
 augroup HighlightTODO
     autocmd!
@@ -374,7 +379,7 @@ autocmd BufRead,BufNewFile *.mojom
 function SetFileC()
   silent SyntasticToggleMode
   call matchadd('ColorColumn', '\%101v.\+', 100)
-  set textwidth=100
+  set textwidth=80
   let g:tabs_are_tabs=0
   let g:tab_size=4
   call DoTabSettings()

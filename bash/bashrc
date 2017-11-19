@@ -33,7 +33,7 @@ include ~/.googlerc
 include ~/.pathrc
 # XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
 
-export FUCHSIA_ROOT=~/fuchsia
+export FUCHSIA_ROOT=~/ssd/fuchsia
 function fuchsia() {
   source $FUCHSIA_ROOT/scripts/env.sh && envprompt && fgo && fset x86-64 "$@"
 }
@@ -462,6 +462,16 @@ function gsb() { # Git select branch
   IFS=$IFS_ORIGINAL
 }
 
+function replace() {
+  if [ "$#" -ne 2 ]; then
+    echo "Need two arguments"
+    return
+  fi
+  OLD="$1"
+  NEW="$2"
+  find ./ -type f -exec sed -i -e "s/${OLD}/${NEW}/g" {} \;
+}
+
 function goto() {
   # Forward all arguments to the python script, and save the output code.
   output=$(python ${SMKLEINRC_PATH}/scripts/goto.py "$@")
@@ -514,3 +524,9 @@ function installTmux() {
 }
 
 promptInstall tmux installTmux
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc' ]; then source '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/completion.bash.inc' ]; then source '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/completion.bash.inc'; fi
