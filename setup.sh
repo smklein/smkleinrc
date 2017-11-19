@@ -30,7 +30,7 @@ unamestr=`uname`
 if [[ "$unamestr" == "Linux" ]]; then
     echo "Running LINUX, eh?"
     echo "Wanna apt-get a bunch of fun stuff?"
-    confirm && sudo apt-get install cmake vim-gnome python2.7-dev direnv clang llvm tmux golang-go
+    confirm && sudo apt-get install cmake vim-gnome python2.7-dev clang llvm tmux golang-go
 elif [[ "$unamestr" == "Darwin" ]]; then
     echo "Running MAC OS, eh?"
     echo "Wanna brew install a bunch of fun stuff?"
