@@ -477,3 +477,14 @@ export EDITOR=vim
 
 # Direnv
 eval "$(direnv hook bash)"
+
+function installTmux() {
+  cd ~/
+  git clone https://github.com/tmux/tmux.git
+  cd tmux
+  sh autogen.sh
+  ./configure && make
+  sudo make install
+}
+
+promptInstall tmux installTmux
