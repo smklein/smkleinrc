@@ -258,6 +258,7 @@ alias ff='find . | grep'
 alias gff='git ls-files | grep'
 alias gs='git status'
 alias gmp='git map-branches'
+alias fs='find . -name .git | xargs -I % git -C %/.. --no-pager grep'
 
 alias filesize='stat --printf="%s"'
 
@@ -371,6 +372,19 @@ function gdf() { # Git diff file
     done
   fi
   IFS=$IFS_ORIGINAL
+}
+
+function gnb() {
+  if [ "$#" -eq 1 ]; then
+    git branch "$1"
+    git checkout "$1"
+  elif [ "$#" -eq 2 ]; then
+    git branch "$1"
+    git checkout "$1"
+    git branch -u "$2"
+  else
+    echo -e "usage: gnb [new branch] [optional upstream]"
+  fi
 }
 
 function ggd() { # Git Go Downstream
