@@ -258,7 +258,15 @@ alias ff='find . | grep'
 alias gff='git ls-files | grep'
 alias gs='git status'
 alias gmp='git map-branches'
-alias fs='find . -name .git | xargs -I % git -C %/.. --no-pager grep'
+
+function fs() {
+  for REPO_DOT_GIT in `find . -name .git`; do
+    REPO=${REPO_DOT_GIT%.*}
+    ( git -C ${REPO} grep --color=always ${1} | awk -v REPO="${REPO}" '$0=REPO$0' ) &
+  done
+  wait
+  # Don't include background job control info
+} 2> /dev/null
 
 alias filesize='stat --printf="%s"'
 
