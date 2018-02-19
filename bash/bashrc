@@ -259,14 +259,18 @@ alias gff='git ls-files | grep'
 alias gs='git status'
 alias gmp='git map-branches'
 
-function fs() {
+function unsortedgrep() {
   for REPO_DOT_GIT in `find . -name .git`; do
     REPO=${REPO_DOT_GIT%.*}
-    ( git -C ${REPO} grep --color=always ${1} | awk -v REPO="${REPO}" '$0=REPO$0' ) &
+    ( git -C ${REPO} grep --color=always ${@} | awk -v REPO="${REPO}" '$0=REPO$0' ) &
   done
   wait
   # Don't include background job control info
 } 2> /dev/null
+
+function fs() {
+  unsortedgrep ${@} | sort -d
+}
 
 alias filesize='stat --printf="%s"'
 
