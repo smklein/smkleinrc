@@ -15,7 +15,8 @@ filetype off                  " required
 
 " --------------- vim-gitgutter: ---------------
 set shell=/bin/bash
-let g:gitgutter_sign_column_always = 1
+set signcolumn=yes
+let g:gitgutter_max_signs = 10000
 let g:gitgutter_diff_args = ''
 let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'

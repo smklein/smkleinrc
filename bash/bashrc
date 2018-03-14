@@ -259,6 +259,19 @@ alias gff='git ls-files | grep'
 alias gs='git status'
 alias gmp='git map-branches'
 
+function unsortedgrep() {
+  for REPO_DOT_GIT in `find . -name .git`; do
+    REPO=${REPO_DOT_GIT%.*}
+    ( git -C "${REPO}" grep --color=always "${@}" | awk -v REPO="${REPO}" '$0=REPO$0' ) &
+  done
+  wait
+  # Don't include background job control info
+}
+
+function fs() {
+  unsortedgrep "${@}" | sort -d
+}
+
 alias filesize='stat --printf="%s"'
 
 function md5() {
@@ -373,6 +386,19 @@ function gdf() { # Git diff file
   IFS=$IFS_ORIGINAL
 }
 
+function gnb() {
+  if [ "$#" -eq 1 ]; then
+    git branch "$1"
+    git checkout "$1"
+  elif [ "$#" -eq 2 ]; then
+    git branch "$1"
+    git checkout "$1"
+    git branch -u "$2"
+  else
+    echo -e "usage: gnb [new branch] [optional upstream]"
+  fi
+}
+
 function ggd() { # Git Go Downstream
   branches=()
   eval "$(git for-each-ref --shell --format='branches+=(%(refname))' refs/heads/)"
@@ -485,7 +511,10 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 
 function installDirenv() {
   cd ~/
+  mkdir -p go/src/github.com/direnv
+  cd go/src/github.com/direnv
   git clone https://github.com/direnv/direnv
+  git clone https://github.com/direnv/go-dotenv
   cd direnv
   sudo make install
 }
@@ -495,3 +524,14 @@ export EDITOR=vim
 
 # Direnv
 eval "$(direnv hook bash)"
+
+function installTmux() {
+  cd ~/
+  git clone https://github.com/tmux/tmux.git
+  cd tmux
+  sh autogen.sh
+  ./configure && make
+  sudo make install
+}
+
+promptInstall tmux installTmux
