@@ -98,7 +98,7 @@ let g:ycm_register_as_syntastic_checker = 0
 " ----------------------------------------------
 " ----------------- vim-rust -------------------
 
-let g:rustfmt_autosave = 1
+" let g:rustfmt_autosave = 1
 
 " ----------------------------------------------
 " ----------------- vim-go ---------------------
@@ -371,6 +371,7 @@ autocmd BufRead,BufNewFile *.mojom
       \ call SetFileMojom()
 
 function SetFileC()
+  set matchpairs+=<:>
   silent SyntasticToggleMode
   call matchadd('ColorColumn', '\%101v.\+', 100)
   set textwidth=100
