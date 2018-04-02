@@ -449,8 +449,6 @@ function gpatch() { # Git (gerrit?) patch
   fi
 }
 
-alias fs='find . -name .git | xargs -I % git -C %/.. --no-pager grep'
-
 alias gsbno='git branch --list'
 function gsb() { # Git select branch
   branchNum=0

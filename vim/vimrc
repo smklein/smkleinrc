@@ -67,7 +67,7 @@ Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between 
 Plugin 'fatih/vim-go' " Utilities for go + vim
 Plugin 'rust-lang/rust.vim' " Rust language
 Plugin 'scrooloose/syntastic' " Syntax checker
-Plugin 'Valloric/YouCompleteMe' " This one's a bit big
+" Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -138,6 +138,7 @@ let g:syntastic_auto_loc_list = 2  " Do not auto-open, but DO auto-close.
 let g:syntastic_aggregate_errors = 1  " I want as many errors as possible.
 let g:syntastic_check_on_open = 1  " Check on first load and on save.
 let g:syntastic_check_on_wq = 0  " Don't bother checking when we quit.
+let g:syntastic_rust_checkers = ['cargo']
 
 " ----------------------------------------------
 " ---------------- incsearch -------------------
