@@ -13,41 +13,6 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" --------------- vim-gitgutter: ---------------
-set shell=/bin/bash
-set signcolumn=yes
-let g:gitgutter_max_signs = 10000
-let g:gitgutter_diff_args = ''
-let g:gitgutter_sign_added = '++'
-let g:gitgutter_sign_modified = '~~'
-let g:gitgutter_sign_removed = '--'
-
-" If you press Ctl-g when state is... : Gitgutter shows you...
-" 0 : Diff
-" 1 : Diff upstream
-" 2 : Turn origin/master
-let g:smklein_gitgutter_state = 1
-
-function ChangeGitgutterDiff()
-  if g:smklein_gitgutter_state == 0
-    GitGutterSignsEnable
-    let g:gitgutter_diff_args = ''
-    let g:smklein_gitgutter_state = 1
-  elseif g:smklein_gitgutter_state == 1
-    GitGutterSignsEnable
-    let g:gitgutter_diff_args = 'HEAD~1'
-    let g:smklein_gitgutter_state = 2
-  elseif g:smklein_gitgutter_state == 2
-    GitGutterSignsEnable
-    let g:gitgutter_diff_args = 'origin/master'
-    let g:smklein_gitgutter_state = 0
-  endif
-endfunction
-
-" Control-g to switch the diff we are viewing
-nnoremap <C-g> :call ChangeGitgutterDiff() \| :w<CR>
-" ----------------------------------------------
-
 " ------------------ vundle: -------------------
 " To install plugins, run either
 " :PluginInstall    or    vim  +PluginInstall +qall
@@ -67,7 +32,7 @@ Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between 
 Plugin 'fatih/vim-go' " Utilities for go + vim
 Plugin 'rust-lang/rust.vim' " Rust language
 Plugin 'scrooloose/syntastic' " Syntax checker
-Plugin 'Valloric/YouCompleteMe' " This one's a bit big
+" Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -88,6 +53,43 @@ let g:ycm_filetype_blacklist = {
 " autocmd VimEnter * SyntasticToggleMode " disable syntastic by default
 
 " ----------------------------------------------
+" --------------- vim-gitgutter: ---------------
+set shell=/bin/bash
+set signcolumn=yes
+let g:gitgutter_max_signs = 10000
+let g:gitgutter_diff_args = ''
+let g:gitgutter_sign_added = '++'
+let g:gitgutter_sign_modified = '~~'
+let g:gitgutter_sign_removed = '--'
+set updatetime=100
+
+" If you press Ctl-g when state is... : Gitgutter shows you...
+" 0 : Diff
+" 1 : Diff upstream
+" 2 : Turn origin/master
+let g:smklein_gitgutter_state = 1
+
+function! ChangeGitgutterDiff()
+  if g:smklein_gitgutter_state == 0
+    GitGutterSignsEnable
+    let g:gitgutter_diff_args = ''
+    let g:smklein_gitgutter_state = 1
+  elseif g:smklein_gitgutter_state == 1
+    GitGutterSignsEnable
+    let g:gitgutter_diff_args = 'HEAD~1'
+    let g:smklein_gitgutter_state = 2
+  elseif g:smklein_gitgutter_state == 2
+    GitGutterSignsEnable
+    let g:gitgutter_diff_args = 'origin/master'
+    let g:smklein_gitgutter_state = 0
+  endif
+endfunction
+
+" Control-g to switch the diff we are viewing
+nnoremap <C-g> :call ChangeGitgutterDiff() \| :w<CR>
+" ----------------------------------------------
+
+
 " ------------------ ctags ---------------------
 set tags=tags;/
 " -------------- YouCompleteMe -----------------
@@ -138,6 +140,7 @@ let g:syntastic_auto_loc_list = 2  " Do not auto-open, but DO auto-close.
 let g:syntastic_aggregate_errors = 1  " I want as many errors as possible.
 let g:syntastic_check_on_open = 1  " Check on first load and on save.
 let g:syntastic_check_on_wq = 0  " Don't bother checking when we quit.
+let g:syntastic_rust_checkers = ['cargo']
 
 " ----------------------------------------------
 " ---------------- incsearch -------------------
