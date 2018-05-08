@@ -430,6 +430,25 @@ function gra() { # Git Rebase All
   done
 }
 
+function gpatch() { # Git (gerrit?) patch
+  UPSTREAM="magenta"
+  if [ "$#" -eq 3 ]; then
+    UPSTREAM=$3
+  fi
+
+  if [ "$#" -eq 2 ]; then
+    OLDBRANCH=$(git rev-parse --abbrev-ref HEAD)
+    NEWBRANCH=$1
+    PATCHNO=$2
+    git nb $NEWBRANCH
+    git branch -u $OLDBRANCH
+    git rebase
+    git fetch https://fuchsia.googlesource.com/$UPSTREAM $PATCHNO && git cherry-pick FETCH_HEAD
+  else
+    echo "gpatch BRANCHNAME PATCHNO (refs/changes/a/b/c) UPSTREAM (Default: magenta)"
+  fi
+}
+
 alias gsbno='git branch --list'
 function gsb() { # Git select branch
   branchNum=0
