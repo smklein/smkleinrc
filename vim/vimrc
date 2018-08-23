@@ -32,6 +32,7 @@ Plugin 'tpope/vim-fugitive' " Git wrappers for vim
 Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
 Plugin 'fatih/vim-go' " Utilities for go + vim
 Plugin 'rust-lang/rust.vim' " Rust language
+Plugin 'cespare/vim-toml' " TOML highlighting
 " Plugin 'scrooloose/syntastic' " Syntax checker
 " Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
