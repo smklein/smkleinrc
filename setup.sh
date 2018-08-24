@@ -30,15 +30,18 @@ unamestr=`uname`
 if [[ "$unamestr" == "Linux" ]]; then
     echo "Running LINUX, eh?"
     echo "Wanna apt-get a bunch of fun stuff?"
-    confirm && sudo apt-get install automake cmake libevent-dev vim-gnome python2.7-dev clang llvm golang-go
+    confirm && sudo apt-get install automake cmake libevent-dev vim-gnome python2.7-dev clang llvm golang-go direnv
 elif [[ "$unamestr" == "Darwin" ]]; then
     echo "Running MAC OS, eh?"
     echo "Wanna brew install a bunch of fun stuff?"
-    confirm && brew install vim cmake
+    confirm && brew install vim cmake direnv
 else
     echo "Unknown OS"
     exit 1
 fi
+
+curl -sSf https://static.rust-lang.org/rustup.sh | sh
+cargo install ripgrep
 
 backup () {
     if [ -z "$1" ]; then
