@@ -394,6 +394,7 @@ function gnb() {
     git branch "$1"
     git checkout "$1"
     git branch -u "$2"
+    git rebase
   else
     echo -e "usage: gnb [new branch] [optional upstream]"
   fi
@@ -505,6 +506,10 @@ function goto() {
     # Anything else is just dumped to stdout, as it is informative.
     echo -e "$output"
   fi
+}
+
+function gsync() {
+  python ${SMKLEINRC_PATH}/scripts/gsync.py "$@"
 }
 
 

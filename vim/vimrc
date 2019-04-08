@@ -33,7 +33,6 @@ Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between 
 Plugin 'fatih/vim-go' " Utilities for go + vim
 Plugin 'rust-lang/rust.vim' " Rust language
 Plugin 'cespare/vim-toml' " TOML highlighting
-" Plugin 'scrooloose/syntastic' " Syntax checker
 " Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -295,7 +294,7 @@ syntax enable
 set background=dark
 " Make .txt/.rst files light...
 autocmd BufRead,BufNewFile *.txt,*rst set background=light
-set term=xterm-256color
+set term=screen-256color
 let g:solarized_termcolors = 256
 let g:solarized_visibility = "high"
 let g:solarized_contrast = "high"
@@ -362,25 +361,6 @@ highlight ColorColumn ctermbg=DarkMagenta
 let g:tabs_are_tabs=0
 let g:tab_size=2
 
-" Good to know about autcmd: These commands run AFTER the entire .vimrc file is
-" processed. Just a heads up.
-autocmd BufNewFile,BufRead *.java
-      \ call matchadd('ColorColumn', '\%101v.\+', 100)
-autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.h
-      \ call SetFileC()
-autocmd BufNewFile,BufRead *.py
-      \ call SetFilePython()
-autocmd BufRead,BufNewFile *.scons
-      \ set filetype=python
-autocmd BufNewFile,BufRead *.txt,*.md
-      \ call SetFileText()
-autocmd BufNewFile,BufRead *.go
-      \ call SetFileGo()
-autocmd BufNewFile,BufRead *.rs
-      \ call SetFileRust()
-autocmd BufRead,BufNewFile *.mojom
-      \ call SetFileMojom()
-
 function SetFileC()
   set matchpairs+=<:>
   silent SyntasticToggleMode
@@ -419,6 +399,25 @@ function SetFileRust()
   let g:tab_size=4
   call DoTabSettings()
 endfunction
+
+" Good to know about autcmd: These commands run AFTER the entire .vimrc file is
+" processed. Just a heads up.
+autocmd BufNewFile,BufRead *.java
+      \ call matchadd('ColorColumn', '\%101v.\+', 100)
+autocmd BufNewFile,BufRead *.cc,*.cpp,*.c,*.h
+      \ call SetFileC()
+autocmd BufNewFile,BufRead *.py
+      \ call SetFilePython()
+autocmd BufRead,BufNewFile *.scons
+      \ set filetype=python
+autocmd BufNewFile,BufRead *.txt,*.md
+      \ call SetFileText()
+autocmd BufNewFile,BufRead *.go
+      \ call SetFileGo()
+autocmd BufNewFile,BufRead *.rs
+      \ call SetFileRust()
+autocmd BufRead,BufNewFile *.mojom
+      \ call SetFileMojom()
 
 " Required to be set as empty for a clean background with tmux / solarized.
 set t_ut=
