@@ -133,6 +133,6 @@ while change_list:
         del git_commit_map[current]
 
     branch_name_map[current] = branch_name
-#    os.unlink(patch_file_path)
+    os.unlink(patch_file_path)
 
 
