@@ -31,11 +31,17 @@ Plugin 'altercation/vim-colors-solarized' " Solarized
 Plugin 'tpope/vim-fugitive' " Git wrappers for vim
 Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
 Plugin 'fatih/vim-go' " Utilities for go + vim
+Plugin 'dart-lang/dart-vim-plugin' " Dart Language
 Plugin 'rust-lang/rust.vim' " Rust language
 Plugin 'cespare/vim-toml' " TOML highlighting
 " Plugin 'Valloric/YouCompleteMe' " This one's a bit big
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
+
+if $FUCHSIA_DIR != ""
+source $FUCHSIA_DIR/scripts/vim/fuchsia.vim
+endif
+
 filetype plugin indent on    " required
 
 " ----------------------------------------------
@@ -365,9 +371,9 @@ function SetFileC()
   set matchpairs+=<:>
   silent SyntasticToggleMode
   call matchadd('ColorColumn', '\%101v.\+', 100)
-  set textwidth=80
+  set textwidth=100
   let g:tabs_are_tabs=0
-  let g:tab_size=4
+  let g:tab_size=2
   call DoTabSettings()
 endfunction
 
@@ -394,6 +400,7 @@ function SetFileGo()
 endfunction
 
 function SetFileRust()
+  silent SyntasticToggleMode
   set textwidth=80
   let g:tabs_are_tabs=0
   let g:tab_size=4
@@ -441,3 +448,4 @@ endfunction
 
 " Call with default settings
 call DoTabSettings()
+

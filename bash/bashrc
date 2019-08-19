@@ -34,6 +34,7 @@ include ~/.pathrc
 # XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
 
 export FUCHSIA_ROOT=~/ssd/fuchsia
+export FUCHSIA_DIR=${FUCHSIA_ROOT}
 function fuchsia() {
   source $FUCHSIA_ROOT/scripts/env.sh && envprompt && fgo && fset x86-64 "$@"
 }
@@ -213,7 +214,7 @@ function get_git_prompt {
 # Preamble
 set_bash_prompt() {
   PS1="\[\033]0;\w\007\]";
-  PS1+="$(get_git_prompt) "; # username
+  PS1+="$(get_git_prompt) "; # Git prompt
   PS1+="${green}\w "; # working directory
   PS1+="${cyan}\$ ${reset}"; # `$` (and reset color)
 }
@@ -512,6 +513,7 @@ function gsync() {
   python ${SMKLEINRC_PATH}/scripts/gsync.py "$@"
 }
 
+alias cdiff="wdiff -n -w $'\033[30;41m' -x $'\033[0m' -y $'\033[30;42m' -z $'\033[0m' "
 
 # Colored manpages
 export LESS_TERMCAP_mb=$'\E[01;31m'
@@ -537,6 +539,21 @@ function installTmux() {
 }
 
 promptInstall tmux installTmux
+
+# Fun rust-related functions
+
+function fdoc() {
+  cargo rustdoc --open --target=x86_64-unknown-fuchsia -- --document-private-items
+}
+
+# Jiri
+
+function ju () {
+    jiri update -rebase-all "$@";
+    local rc=$?;
+    [ $rc -eq 0 ] || echo "*** jiri update status: $rc" 1>&2;
+    jiri branch -delete-merged && jiri branch && return $rc
+}
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc' ]; then source '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc'; fi
