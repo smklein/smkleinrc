@@ -18,13 +18,11 @@ confirm () {
 # It is important that this is set correctly...
 export SMKLEINRC_PATH="$HOME/smkleinrc"
 
+echo "Want to setup ~/.gitconfig?"
+confirm && cp ${SMKLEINRC_PATH}/git/gitconfig ~/.gitconfig
+echo "Want to configure your gitconfig for work?"
 # Configure git stuff
-git config --global user.email seanmarionklein@gmail.com
-git config --global user.name "Sean Klein"
-# 10 hours for git creds
-git config --global credential.helper 'cache --timeout=36000'
-# Stop that annoying "old style git push" crap
-git config --global push.default simple
+confirm || git config --global user.email seanmarionklein@gmail.com
 
 unamestr=`uname`
 if [[ "$unamestr" == "Linux" ]]; then

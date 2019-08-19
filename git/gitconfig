@@ -1,0 +1,23 @@
+[user]
+	name = Sean Klein
+	email = smklein@google.com
+[core]
+	autocrlf = false
+	filemode = false
+[color]
+  ui = true
+[color "grep"]
+  linenumber = yellow bold
+  match = red
+  filename = green
+[alias]
+    nb = new-branch
+    tb = new-branch --upstream_current
+[http]
+	cookiefile = /usr/local/google/home/smklein/.gitcookies
+[credential]
+	helper = cache --timeout=36000
+[push]
+  default = simple
+[log]
+  follow = true
