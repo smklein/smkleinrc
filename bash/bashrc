@@ -33,12 +33,6 @@ include ~/.googlerc
 include ~/.pathrc
 # XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
 
-export FUCHSIA_ROOT=~/ssd/fuchsia
-export FUCHSIA_DIR=${FUCHSIA_ROOT}
-function fuchsia() {
-  source $FUCHSIA_ROOT/scripts/env.sh && envprompt && fgo && fset x86-64 "$@"
-}
-
 source ${SMKLEINRC_PATH}/git/git-completion.bash
 export PATH=${GITHUB_PATH}/depot_tools:"$PATH"
 
@@ -211,11 +205,42 @@ function get_git_prompt {
 # Old PS1
 #PS1='\[\e[0;35m\]$(get_git_prompt)\[\e[m\] \[\e[0;34m\]\w\[\e[m\] \[\e[0;32m\]\$\[\e[m\] \[\e[0;37m\]'
 
+# Prints the current CitC if pwd is in a CitC
+function citc_name() {
+  if [[ $PWD =~ ^/google/src/cloud/$USER/([^/]*).* ]]; then
+    printf "${BASH_REMATCH[1]}"
+  fi
+}
+
+# Returns true if inside git repo.
+function inside_git_repo() {
+  git rev-parse --is-inside-work-tree 2> /dev/null
+}
+
+# Returns the relative path to the PWD.
+# Example:
+#   PWD = /foo/bar
+#   relative_path /foo/ --> bar
+function relative_path() {
+  echo $(pwd | sed "s|^${1}\?||")
+}
+
 # Preamble
 set_bash_prompt() {
   PS1="\[\033]0;\w\007\]";
-  PS1+="$(get_git_prompt) "; # Git prompt
-  PS1+="${green}\w "; # working directory
+  if [[ $(inside_git_repo) ]]; then
+    # Git prompt
+    PS1+="$(get_git_prompt) ";
+    # Working directory (relative to repo).
+    PS1+="${green}\w ";
+  elif [[ $(citc_name) ]]; then
+    # Citc name
+    PS1+="${cyan}[${yellow}$(citc_name)${cyan}] "
+    # Working directory (relative to citc).
+    PS1+="${green}$(relative_path /google/src/cloud/${USER}/$(citc_name)/) ";
+  else
+    PS1+="${green}\w ";
+  fi
   PS1+="${cyan}\$ ${reset}"; # `$` (and reset color)
 }
 PROMPT_COMMAND=set_bash_prompt
@@ -229,34 +254,9 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-# Shorthand for useful commands
-alias helpme='echo -e "GUIDE: ${CYAN}Tool, ${GREEN}command, ${BLUE}required args, ${PURPLE}opt args${NC}...
-    ${CYAN}Git${NC} Commands:
-        ${CYAN}git${NC} ${GREEN}cl lint${NC} -- ${RED}Lint your CL${NC}
-        ${CYAN}git${NC} ${GREEN}cl try${NC} -- ${RED}Use trybot on CL${NC}
-        ${CYAN}git${NC} ${GREEN}cl upload${NC} -- ${RED}Upload your CL${NC}
-        ${CYAN}git${NC} ${GREEN}cl help ${PURPLE}<command>${NC} -- ${RED}Get more git cl help${NC}
-        ${CYAN}git${NC} ${GREEN}pull origin${NC} -- ${RED}Pull new changes to master${NC}
-        ${GREEN}gclient sync${NC} -- ${RED}Update deps${NC}
-        ${CYAN}git${NC} ${GREEN}rebase-update${NC} -- ${RED}Pull new changes to all branches.${NC}
-        ${CYAN}git${NC} ${GREEN}nb/tb ${BLUE}<branch_name>${NC} -- ${RED}Create new
-               branch/CL from origin/master. (tb -- current)${NC}
-               Commit as much as you want to this branch. Upload to post for
-               code review. Checkout base branch (either master or CL1, if new
-               CL will depend on CL1) and use the ${PURPLE}--upstream_current
-               ${NC}argument, which is default origin/master.
-        ${CYAN}git${NC} ${GREEN}map${NC} -- ${RED}View map of commits${NC}
-        ${CYAN}git${NC} ${GREEN}map-branches${NC} -- ${RED}View map of branches${NC}
-        ${CYAN}git${NC} ${GREEN}grep stringpattern -- "filepattern"${NC}
-    ${CYAN}Macros:${NC}
-        ${CYAN}nvs ${BLUE}<number>${NC} -- ${RED}Set NACLVERBOSITY level${NC}
-    ${CYAN}Shortcuts:${NC}
-        ${CYAN}ff / gff / gcm / gdf${NC}
-"'
-
 # Find filename
-alias ff='find . | grep'
-alias gff='git ls-files | grep'
+alias ff='find . | rg'
+alias gff='git ls-files | rg'
 alias gs='git status'
 alias gmp='git map-branches'
 
@@ -324,6 +324,7 @@ $ ${CYAN}gmpush${NC} -- push to remote upstream master (from this current branch
 $ ${CYAN}gerritpatch${NC} -- Upload patch for gerrit code review
 $ ${CYAN}gcm${NC} -- git commit all with a message
 $ ${CYAN}gam${NC} -- gcm, but amend instead of making a new commit
+$ ${CYAN}gua${NC} -- git undo amend
 $ ${CYAN}gdf${NC} -- show diffs with upstream
 $ ${CYAN}gsb${NC} -- select a branch
 "'
@@ -334,17 +335,24 @@ function gmp() {
 function gmb() {
   git log --graph --all --decorate --simplify-by-decoration --oneline;
 }
-function gupstream() { git branch -u origin/master; }
-function gmpush() { git push origin `git rev-parse --abbrev-ref HEAD`:master; }
+function gupstream() {
+  git branch -u $(git remote)/master;
+}
+function gmpush() {
+  git push $(git remote) `git rev-parse --abbrev-ref HEAD`:master;
+}
+
 function gerritpatch() {
   if [ "$#" -eq 1 ]; then
-    git push origin HEAD:refs/for/$1
+    git push $(git remote) HEAD:refs/for/$1
     return
   fi
   echo "Whomp. Try this: $ gerritpatch [Remote Branch]"
 }
 function gcm() { git commit -a -m "$*" ;}
 function gam() { git commit -a --amend -m "$*" ;}
+function gua() { git reset --soft HEAD@{1}$ ;}
+
 alias gdfno='git diff `git rev-parse @{u}` --name-only'
 alias gdfns='git diff `git rev-parse @{u}` --name-status'
 alias gb='git branch'
@@ -540,23 +548,11 @@ function installTmux() {
 
 promptInstall tmux installTmux
 
-# Fun rust-related functions
-
-function fdoc() {
-  cargo rustdoc --open --target=x86_64-unknown-fuchsia -- --document-private-items
-}
-
-# Jiri
-
-function ju () {
-    jiri update -rebase-all "$@";
-    local rc=$?;
-    [ $rc -eq 0 ] || echo "*** jiri update status: $rc" 1>&2;
-    jiri branch -delete-merged && jiri branch && return $rc
-}
-
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc' ]; then source '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc'; fi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/completion.bash.inc' ]; then source '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/completion.bash.inc'; fi
+
+source ${SMKLEINRC_PATH}/bash/fuchsiarc
+source ${SMKLEINRC_PATH}/bash/verbrc

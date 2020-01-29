@@ -1,0 +1,16 @@
+# Added by /usr/local/google/home/smklein/tmp/gerrit/bootstrap/shared/tools/dev/configure/setup.sh
+# 20200107.153203
+function verb() {
+  eval "$("${HOME}/bin/ssh_agent.sh")"
+
+  if [[ -r $HOME/verb/tools/envsetup.sh ]]; then
+    source $HOME/verb/tools/envsetup.sh
+  fi
+
+  # Clang format, wihin verb.
+  function cf() {
+    dbash "clang-format-verb 3.8 -i *.cc *.h *.proto"
+  }
+}
+
+export VERB_HOME=~/verb

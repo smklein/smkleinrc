@@ -1,0 +1,15 @@
+export FUCHSIA_ROOT=~/fuchsia
+export FUCHSIA_DIR=${FUCHSIA_ROOT}
+function fuchsia() {
+  source $FUCHSIA_ROOT/scripts/env.sh && envprompt && fgo && fset x86-64 "$@"
+}
+
+# Jiri
+
+function ju () {
+    jiri update -rebase-all "$@";
+    local rc=$?;
+    [ $rc -eq 0 ] || echo "*** jiri update status: $rc" 1>&2;
+    jiri branch -delete-merged && jiri branch && return $rc
+}
+
