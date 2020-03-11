@@ -38,10 +38,6 @@ Plugin 'cespare/vim-toml' " TOML highlighting
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 
-if $FUCHSIA_DIR != ""
-source $FUCHSIA_DIR/scripts/vim/fuchsia.vim
-endif
-
 filetype plugin indent on    " required
 
 " ----------------------------------------------

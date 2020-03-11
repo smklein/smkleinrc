@@ -86,6 +86,9 @@ function install_rc_files () {
   rm -f ~/.tmux_post_2.1.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux_post_2.1.conf ~/.tmux_post_2.1.conf
   rm -f ~/.load_tmux_conf.sh; ln -s ${SMKLEINRC_PATH}/tmux/load_tmux_conf.sh ~/.load_tmux_conf.sh
 
+  echo "Cloning tmux plugin manager."
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
   mkdir -p ~/.vim
 
   if [ -d ~/.vim/bundle/Vundle.vim ]; then
