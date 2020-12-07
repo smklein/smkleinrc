@@ -28,7 +28,7 @@ unamestr=`uname`
 if [[ "$unamestr" == "Linux" ]]; then
     echo "Running LINUX, eh?"
     echo "Wanna apt-get a bunch of fun stuff?"
-    confirm && sudo apt-get update && sudo apt-get install automake cmake libevent-dev vim-gnome python2.7-dev clang llvm golang-go direnv rip-grep
+    confirm && sudo apt-get update && sudo apt-get install automake cmake libevent-dev direnv ripgrep
 elif [[ "$unamestr" == "Darwin" ]]; then
     echo "Running MAC OS, eh?"
     echo "Wanna brew install a bunch of fun stuff?"
