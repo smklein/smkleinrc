@@ -206,16 +206,19 @@ function get_git_prompt {
 # Old PS1
 #PS1='\[\e[0;35m\]$(get_git_prompt)\[\e[m\] \[\e[0;34m\]\w\[\e[m\] \[\e[0;32m\]\$\[\e[m\] \[\e[0;37m\]'
 
-# Prints the current CitC if pwd is in a CitC
-function citc_name() {
-  if [[ $PWD =~ ^/google/src/cloud/$USER/([^/]*).* ]]; then
-    printf "${BASH_REMATCH[1]}"
-  fi
-}
-
-# Returns true if inside git repo.
+# Returns 1 if inside a git repo, 0 if not inside a git repo.
 function inside_git_repo() {
-  git rev-parse --is-inside-work-tree 2> /dev/null
+  # Non repo: "fatal" to stderr; retcode 128
+  #     repo: "true" to stdout; retcode 0
+  #     .git: "false" to stdout, retcode 0
+
+  # This command prints "true" when we can run our commands, and
+  # false otherwise. Tragically, this means we can't infer the output
+  # from exit code alone (hence the grepping).
+  local -r output=$(git rev-parse --is-inside-work-tree 2> /dev/null) || return 0
+
+  # We ARE in a git repo, but we may or may not be in the work tree:
+  echo "$output" | grep -q "true"
 }
 
 # Returns the relative path to the PWD.
@@ -229,16 +232,11 @@ function relative_path() {
 # Preamble
 set_bash_prompt() {
   PS1="\[\033]0;\w\007\]";
-  if [[ $(inside_git_repo) ]]; then
+  if inside_git_repo; then
     # Git prompt
     PS1+="$(get_git_prompt) ";
     # Working directory (relative to repo).
     PS1+="${green}\w ";
-  elif [[ $(citc_name) ]]; then
-    # Citc name
-    PS1+="${cyan}[${yellow}$(citc_name)${cyan}] "
-    # Working directory (relative to citc).
-    PS1+="${green}$(relative_path /google/src/cloud/${USER}/$(citc_name)/) ";
   else
     PS1+="${green}\w ";
   fi

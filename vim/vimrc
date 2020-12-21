@@ -384,8 +384,8 @@ function SetFilePython()
 endfunction
 
 function SetFileText()
-  " Don't autoindent on enter (like a C file)
-  set nocindent
+  " Match indentation automatically (cross 80 chars, use prior indent).
+  set autoindent
   " Automatic word wrapping to 80 characters
   set textwidth=80
 endfunction
