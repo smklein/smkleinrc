@@ -17,25 +17,25 @@ export SMKLEINRC_PATH=~/smkleinrc
 export GITHUB_PATH=~/repos
 
 # Default path for rust Cargo installs
-export PATH=$PATH:~/.cargo/bin
-export PATH=$PATH:~/.cargo/env
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.cargo/env:$PATH"
 
 # XXX XXX XXX XXX INCLUDE OTHER RC FILES HERE XXX XXX XXX XXX
 # This .bashrc file should be computer-agnostic!
 include ${SMKLEINRC_PATH}/bash/setuprc
 
+# Local, should not be committed.
+include ~/.pathrc
+
+# XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
+
 if [ "$(uname)" == "Darwin" ]; then
   # Do something under Mac OS X platform
   include ${SMKLEINRC_PATH}/bash/macrc    # Full of mac-specific things
+elif [ "$(uname)" != "SunOS" ]; then
+  source ${SMKLEINRC_PATH}/git/git-completion.bash
+  export PATH=${GITHUB_PATH}/depot_tools:"$PATH"
 fi
-
-# Local, should not be committed.
-include ~/.googlerc
-include ~/.pathrc
-# XXX XXX XXX XXX END INCLUDE OTHER RC FILES XXX XXX XXX XXX
-
-source ${SMKLEINRC_PATH}/git/git-completion.bash
-export PATH=${GITHUB_PATH}/depot_tools:"$PATH"
 
 alias tmux='tmux -2'
 
@@ -118,12 +118,10 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+    if [ "$(uname)" != "SunOS" ]; then
+      alias fgrep='fgrep --color=auto'
+      alias egrep='egrep --color=auto'
+    fi
 fi
 
 stty -ixon
@@ -194,12 +192,12 @@ function parse_git_branch {
 
 function get_git_prompt {
   if git rev-parse --git-dir > /dev/null 2>&1; then
-    top=`git rev-parse --show-toplevel`
-    bn=`basename $top`
-    fullremote=`git remote -v`
-    shortremote=`echo ${fullremote##*/} | cut -d "." -f1 | cut -d " " -f1`
+    top=$(git rev-parse --show-toplevel)
+    bn=$(basename $top)
+    fullremote=$(git remote -v)
+    shortremote=$(echo "${fullremote##*/}" | cut -d "." -f1 | cut -d " " -f1)
     branch=$(parse_git_branch)
-    echo "${cyan}[${purple}"$shortremote"${cyan} | ${purple}"$branch"${cyan}]"
+    echo "${cyan}[${purple}${shortremote}${cyan} | ${purple}${branch}${cyan}]"
   fi
 }
 
@@ -207,7 +205,7 @@ function get_git_prompt {
 #PS1='\[\e[0;35m\]$(get_git_prompt)\[\e[m\] \[\e[0;34m\]\w\[\e[m\] \[\e[0;32m\]\$\[\e[m\] \[\e[0;37m\]'
 
 # Returns 1 if inside a git repo, 0 if not inside a git repo.
-function inside_git_repo() {
+function inside_git_repo {
   # Non repo: "fatal" to stderr; retcode 128
   #     repo: "true" to stdout; retcode 0
   #     .git: "false" to stdout, retcode 0
@@ -221,17 +219,42 @@ function inside_git_repo() {
   echo "$output" | grep -q "true"
 }
 
+# Returns 1 if inside an ssh session, 0 if not inside an ssh session.
+function inside_ssh_session() {
+  if [ -z "$SSH_CLIENT" ] || [ -z "$SSH_TTY" ]; then
+    return 1
+  else
+    return 0
+  fi
+}
+
 # Returns the relative path to the PWD.
 # Example:
 #   PWD = /foo/bar
 #   relative_path /foo/ --> bar
-function relative_path() {
+function relative_path {
   echo $(pwd | sed "s|^${1}\?||")
+}
+
+get_exit_status() {
+  if [[ $1 -ne 0 ]]; then
+    echo "${red}❌ ($1) ${reset}"
+  fi
 }
 
 # Preamble
 set_bash_prompt() {
+  local exit_status="$?"
   PS1="\[\033]0;\w\007\]";
+  if inside_ssh_session; then
+    if [ "$(uname)" == "SunOS" ]; then
+      PS1+="🌞 ";
+    else
+      PS1+="📡 "
+    fi
+  else
+    PS1+="🏠 "
+  fi
   if inside_git_repo; then
     # Git prompt
     PS1+="$(get_git_prompt) ";
@@ -240,7 +263,7 @@ set_bash_prompt() {
   else
     PS1+="${green}\w ";
   fi
-  PS1+="${cyan}\$ ${reset}"; # `$` (and reset color)
+  PS1+="\n$(get_exit_status $exit_status) ${cyan}\$ ${reset}"; # `$` (and reset color)
 }
 PROMPT_COMMAND=set_bash_prompt
 
@@ -259,7 +282,7 @@ alias gff='git ls-files | rg'
 alias gs='git status'
 alias gmp='git map-branches'
 
-function unsortedgrep() {
+function unsortedgrep {
   for REPO_DOT_GIT in `find . -name .git`; do
     REPO=${REPO_DOT_GIT%.*}
     ( git -C "${REPO}" grep --color=always "${@}" | awk -v REPO="${REPO}" '$0=REPO$0' ) &
@@ -268,13 +291,13 @@ function unsortedgrep() {
   # Don't include background job control info
 }
 
-function fs() {
+function fs {
   unsortedgrep "${@}" | sort -d
 }
 
 alias filesize='stat --printf="%s"'
 
-function md5() {
+function md5 {
   echo `md5sum $1 | awk '{ print $1 }'`
 }
 
@@ -328,13 +351,13 @@ $ ${CYAN}gdf${NC} -- show diffs with upstream
 $ ${CYAN}gsb${NC} -- select a branch
 "'
 
-function gmp() {
+function gmp {
   git map-branches
 }
-function gmb() {
+function gmb {
   git log --graph --all --decorate --simplify-by-decoration --oneline;
 }
-function gupstream() {
+function gupstream {
   git branch -u $(git remote)/master;
 }
 function gmpush() {
@@ -355,6 +378,13 @@ function gua() { git reset --soft HEAD@{1}$ ;}
 alias gdfno='git diff `git rev-parse @{u}` --name-only'
 alias gdfns='git diff `git rev-parse @{u}` --name-status'
 alias gb='git branch'
+
+function gdm() { # Git diff main... but like, the last main the branch saw.
+  if [ "$#" -eq 1 ]; then
+    git diff $(git merge-base main "$1") "$1"
+  fi
+}
+
 function gdf() { # Git diff file
   fileNum=0
   IFS_ORIGINAL=$IFS
@@ -516,10 +546,6 @@ function goto() {
   fi
 }
 
-function gsync() {
-  python ${SMKLEINRC_PATH}/scripts/gsync.py "$@"
-}
-
 alias cdiff="wdiff -n -w $'\033[30;41m' -x $'\033[0m' -y $'\033[30;42m' -z $'\033[0m' "
 
 # Colored manpages
@@ -533,10 +559,7 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 
 export EDITOR=vim
 
-# Direnv
-eval "$(direnv hook bash)"
-
-function installTmux() {
+function installTmux {
   cd ~/
   git clone https://github.com/tmux/tmux.git
   cd tmux
@@ -545,7 +568,9 @@ function installTmux() {
   sudo make install
 }
 
-promptInstall tmux installTmux
+if ! inside_ssh_session; then
+  promptInstall tmux installTmux
+fi
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc' ]; then source '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc'; fi
@@ -553,5 +578,13 @@ if [ -f '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/path.bash.inc' ]
 # The next line enables shell command completion for gcloud.
 if [ -f '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/completion.bash.inc' ]; then source '/usr/local/google/home/smklein/gcloud/google-cloud-sdk/completion.bash.inc'; fi
 
-source ${SMKLEINRC_PATH}/bash/fuchsiarc
-source ${SMKLEINRC_PATH}/bash/verbrc
+# This command enables direnv within this shell.
+eval "$(direnv hook bash)"
+
+source "$HOME/.cargo/env"
+
+alias sun="ssh helios-dev.vm"
+alias nuc="ssh smklein@omnios.local"
+alias thelio="ssh smklein@thelio.local"
+alias theliots="ssh smklein@100.86.204.107"
+. "$HOME/.cargo/env"

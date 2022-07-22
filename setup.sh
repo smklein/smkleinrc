@@ -18,11 +18,8 @@ confirm () {
 # It is important that this is set correctly...
 export SMKLEINRC_PATH="$HOME/smkleinrc"
 
-echo "Want to setup ~/.gitconfig?"
+echo "Want to setup ~/.gitconfig (copy from smkleinrc)?"
 confirm && cp ${SMKLEINRC_PATH}/git/gitconfig ~/.gitconfig
-echo "Want to configure your gitconfig for work?"
-# Configure git stuff
-confirm || git config --global user.email seanmarionklein@gmail.com
 
 unamestr=`uname`
 if [[ "$unamestr" == "Linux" ]]; then
@@ -81,10 +78,6 @@ function install_rc_files () {
 
   echo "About to delete .tmux and replace it with symlink."
   backup ~/.tmux.conf; rm -f ~/.tmux.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux.conf ~/.tmux.conf
-  # I'm not going to bother confirming for the weirder tmux files we might want...
-  rm -f ~/.tmux_pre_2.1.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux_pre_2.1.conf ~/.tmux_pre_2.1.conf
-  rm -f ~/.tmux_post_2.1.conf; ln -s ${SMKLEINRC_PATH}/tmux/tmux_post_2.1.conf ~/.tmux_post_2.1.conf
-  rm -f ~/.load_tmux_conf.sh; ln -s ${SMKLEINRC_PATH}/tmux/load_tmux_conf.sh ~/.load_tmux_conf.sh
 
   echo "Cloning tmux plugin manager."
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm

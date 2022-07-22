@@ -13,30 +13,32 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-" ------------------ vundle: -------------------
-" To install plugins, run either
-" :PluginInstall    or    vim  +PluginInstall +qall
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-" call vundle#begin('~/some/path/here')
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-" Keep Plugin commands between vundle#begin/end.
-Plugin 'scrooloose/syntastic' " Syntax checker
-Plugin 'haya14busa/incsearch.vim' " Incremental search
-Plugin 'airblade/vim-gitgutter' " Git diffs inline
-Plugin 'altercation/vim-colors-solarized' " Solarized
-Plugin 'tpope/vim-fugitive' " Git wrappers for vim
-Plugin 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
-Plugin 'fatih/vim-go' " Utilities for go + vim
-Plugin 'dart-lang/dart-vim-plugin' " Dart Language
-Plugin 'rust-lang/rust.vim' " Rust language
-Plugin 'cespare/vim-toml' " TOML highlighting
-" Plugin 'Valloric/YouCompleteMe' " This one's a bit big
+" ------------------ https://github.com/junegunn/vim-plug : -------------------
+" Install plugs:    :PlugInstall
+" Update plugs:     :PlugUpdate
+" Update plug:      :PlugUpgrade
+" Delete old plugs  :PlugClean
+
+if has('nvim')
+  call plug#begin(stdpath('data') . '/plugged')
+else
+  call plug#begin('~/.vim/plugged')
+endif
+
+Plug 'scrooloose/syntastic' " Syntax checker
+Plug 'haya14busa/incsearch.vim' " Incremental search
+Plug 'airblade/vim-gitgutter' " Git diffs inline
+Plug 'altercation/vim-colors-solarized' " Solarized
+Plug 'tpope/vim-fugitive' " Git wrappers for vim
+Plug 'christoomey/vim-tmux-navigator' " Vim like controls for jumping between windows
+Plug 'fatih/vim-go' " Utilities for go + vim
+Plug 'dart-lang/dart-vim-plugin' " Dart Language
+Plug 'rust-lang/rust.vim' " Rust language
+Plug 'cespare/vim-toml' " TOML highlighting
+" Plug 'Valloric/YouCompleteMe' " This one's a bit big
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " Because YCM is killing me.
 " All of your Plugins must be added before the following line
-call vundle#end()            " required
+call plug#end()
 
 filetype plugin indent on    " required
 
@@ -51,20 +53,69 @@ let g:ycm_filetype_blacklist = {
       \ 'go': 1,
       \ 'cpp' : 1,
       \ 'c' : 1,
+      \ 'tsx' : 1,
+      \ 'rs': 1,
       \}
+
+" Not necessary, I think. I believe rust-analyzer is now the default
+" with YCM...
+" let g:ycm_global_ycm_extra_conf = '~/.config/nvim/global_extra_conf.py'
 
 " Syntastic -- "Commented" == "Enabled"
 " autocmd VimEnter * SyntasticToggleMode " disable syntastic by default
 
 " ----------------------------------------------
+" --------------- COC : ------------------------
+
+" :CocInfo
+" :CocList
+
+""""""""""""""
+" CoC Config
+""""""""""""""
+" Use tab for trigger completion with characters ahead and navigate.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use K (ahem, 'shift + k') to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" ----------------------------------------------
 " --------------- vim-gitgutter: ---------------
 set signcolumn=yes
 let g:gitgutter_max_signs = 10000
-let g:gitgutter_diff_args = ''
+let g:gitgutter_diff_base = ''
 let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'
 let g:gitgutter_sign_removed = '--'
-set updatetime=50
+set updatetime=100
 
 " This is necessary to avoid making the gutter gray
 autocmd ColorScheme * highlight! link SignColumn LineNr
@@ -74,19 +125,19 @@ autocmd ColorScheme * highlight! link SignColumn LineNr
 " 1 : Diff upstream
 " 2 : Turn origin/master
 let g:smklein_gitgutter_state = 1
+let g:gitgutter_grep=''
 
 function! ChangeGitgutterDiff()
+  GitGutterEnable
+  GitGutterSignsEnable
   if g:smklein_gitgutter_state == 0
-    GitGutterSignsEnable
-    let g:gitgutter_diff_args = ''
+    let g:gitgutter_diff_base = ''
     let g:smklein_gitgutter_state = 1
   elseif g:smklein_gitgutter_state == 1
-    GitGutterSignsEnable
-    let g:gitgutter_diff_args = 'HEAD~1'
+    let g:gitgutter_diff_base = 'HEAD~1'
     let g:smklein_gitgutter_state = 2
   elseif g:smklein_gitgutter_state == 2
-    GitGutterSignsEnable
-    let g:gitgutter_diff_args = 'origin/master'
+    let g:gitgutter_diff_base = 'origin/main'
     let g:smklein_gitgutter_state = 0
   endif
 endfunction
@@ -99,9 +150,10 @@ nnoremap <C-g> :call ChangeGitgutterDiff() \| :w<CR>
 " ------------------ ctags ---------------------
 set tags=tags;/
 " -------------- YouCompleteMe -----------------
+" To debug:  :YcmDebugInfo
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_always_populate_location_list = 1
-set completeopt-=preview
+set completeopt=menu,preview
 let g:ycm_register_as_syntastic_checker = 0
 
 " ----------------------------------------------
@@ -161,13 +213,6 @@ if uname !~ "Darwin"
 endif
 " ----------------------------------------------
 
-" ----------------- google ---------------------
-" Google specific
-if filereadable("/usr/share/vim/google/google.vim")
-  source /usr/share/vim/google/google.vim
-endif
-" ----------------------------------------------
-
 " ------------ Status, ruler, etc --------------
 " Ensure that we are in modern vim mode, not backwards-compatible vi mode
 set nocompatible
@@ -212,7 +257,7 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 set statusline+=[Diff\ 
-set statusline+=%{g:gitgutter_diff_args}
+set statusline+=%{g:gitgutter_diff_base}
 set statusline+=],
 
 set statusline+=%c          "column number
@@ -298,7 +343,7 @@ syntax enable
 set background=dark
 " Make .txt/.rst files light...
 autocmd BufRead,BufNewFile *.txt,*rst set background=light
-set term=screen-256color
+" set term=tmux-256color
 let g:solarized_termcolors = 256
 let g:solarized_visibility = "high"
 let g:solarized_contrast = "high"
@@ -315,20 +360,21 @@ hi Function ctermfg=87 gui=bold
 
 " colorscheme zellner
 " Admittedly, I couldn't disable autofolding... I just used a high level...
+let g:rust_fold = 1
 set foldlevelstart=2
-set foldmethod=indent
+set foldmethod=syntax
 " More folding (locally, by one level)
-nnoremap zj zC
-" More folding (globally, by all levels)
+nnoremap zj zc
+" " More folding (globally, by all levels)
 nnoremap zh zM
-" Less folding (locally, by one level)
-nnoremap zk zO
-" Less folding (globally, by all levels)
+" " Less folding (locally, by one level)
+nnoremap zk zo
+" " Less folding (globally, by all levels)
 nnoremap zl zR
 set nofoldenable
 
 " Use control b to open current file in Chrome (B for Browser)
-nnoremap <c-b> :exe '!google-chrome %'<CR>
+nnoremap <c-b> :exe '!chromium %'<CR>
 
 " move vertically by visual line
 nnoremap j gj
@@ -405,6 +451,11 @@ function SetFileRust()
   call DoTabSettings()
 endfunction
 
+function SetFileTypeScript()
+  syntax off
+  set re=0
+endfunction
+
 " Good to know about autcmd: These commands run AFTER the entire .vimrc file is
 " processed. Just a heads up.
 autocmd BufNewFile,BufRead *.java
@@ -421,8 +472,8 @@ autocmd BufNewFile,BufRead *.go
       \ call SetFileGo()
 autocmd BufNewFile,BufRead *.rs
       \ call SetFileRust()
-autocmd BufRead,BufNewFile *.mojom
-      \ call SetFileMojom()
+autocmd BufNewFile,BufRead *.ts
+      \ call SetFileTypeScript()
 
 " Required to be set as empty for a clean background with tmux / solarized.
 set t_ut=
