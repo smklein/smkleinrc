@@ -385,6 +385,17 @@ function gdm() { # Git diff main... but like, the last main the branch saw.
   fi
 }
 
+function gh_delete_old_prs() {
+  local -a branches
+  readarray -t branches <<< "$(gh pr list --author "@me" -s closed --json headRefName --jq '.[].headRefName')"
+
+  for branch in "${branches[@]}"; do
+    if [[ $(git rev-parse --verify "$branch" 2> /dev/null) ]] ; then
+      git branch -D "${branch}"
+    fi
+  done
+}
+
 function gdf() { # Git diff file
   fileNum=0
   IFS_ORIGINAL=$IFS
@@ -496,9 +507,9 @@ function gsb() { # Git select branch
     IFS=$'\n'
     for b in $(gsbno)
     do
-      b=`echo $b | cut -c 3-`
+     b=$(echo "$b" | cut -c 3-)
       if [ "$1" == "$branchNum" ]; then
-        git checkout $b
+        git checkout "$b"
       fi
       branchNum=$((branchNum + 1))
     done
@@ -512,7 +523,7 @@ function gsb() { # Git select branch
       if [[ ${b:0:1} == "*" ]]; then
         color=${GREEN}
       fi
-      b=`echo $b | cut -c 3-`
+      b=$(echo "$b" | cut -c 3-)
       echo -e "[$branchNum] ${color}$b${NC}"
       branchNum=$((branchNum + 1))
     done
@@ -528,6 +539,25 @@ function replace() {
   OLD="$1"
   NEW="$2"
   find ./ -type f -exec sed -i -e "s/${OLD}/${NEW}/g" {} \;
+}
+
+function retry() {
+    local n=0
+    local try=$1
+    if [[ $# -le 1 ]]; then
+        echo "Usage: retry <retry_number> <Command>";
+        return
+    fi
+
+    until [[ $n -ge $try ]]
+    do
+        if ! time "${@:2}"; then
+            echo "Failed on iteration: $n"
+            return
+        fi
+        ((n++))
+    done
+    echo "Completed $n iterations"
 }
 
 function goto() {
@@ -585,6 +615,8 @@ source "$HOME/.cargo/env"
 
 alias sun="ssh helios-dev.vm"
 alias nuc="ssh smklein@omnios.local"
-alias thelio="ssh smklein@thelio.local"
-alias theliots="ssh smklein@100.86.204.107"
+alias thelio="ssh -A smklein@thelio.local"
+alias theliots="ssh -A smklein@100.86.204.107"
 . "$HOME/.cargo/env"
+
+source "$HOME/.openai_profile"
